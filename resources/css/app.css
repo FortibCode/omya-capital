@@ -1,0 +1,75 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+  :root {
+    --brand-navy: #0B1F33;
+    --brand-primary: #0B4F71;
+    --brand-blue: #005B8E;
+    --brand-gold: #B08D2C;
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F8FAFC;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #F8FAFC;
+    color: #0F172A;
+    font-family: 'Figtree', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* Slow continuous zoom for hero background imagery (cheap, GPU-composited) */
+@keyframes kenburns {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.08); }
+}
+
+.animate-kenburns {
+  animation: kenburns 20s ease-out forwards;
+}
+
+/* Animated underline for editorial text links */
+.link-underline {
+  position: relative;
+  text-decoration: none;
+}
+
+.link-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.link-underline:hover::after,
+.link-underline:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
