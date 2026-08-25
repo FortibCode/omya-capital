@@ -63,7 +63,7 @@ function AnimatedPath({ d, strokeWidth, delay, duration }) {
     );
 }
 
-export default function IntroLoader({ duration = 3200 }) {
+export default function IntroLoader({ duration = 5000 }) {
     const [phase, setPhase] = useState('drawing'); // 'drawing' | 'hold' | 'exit'
 
     // Quand CAPITAL finit d'apparaître (~2.45s) on passe en hold, puis exit

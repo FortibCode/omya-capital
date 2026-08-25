@@ -7,6 +7,7 @@ import RevealOnScroll, { staggerDelay } from '@/Components/RevealOnScroll';
 import DrawnPath from '@/Components/DrawnPath';
 import CarCarouselTrack from '@/Components/CarCarouselTrack';
 import TeamCard from '@/Components/TeamCard';
+import OmyaLogo from '@/Components/OmyaLogo';
 import { useLanguage, translateService, translateMember } from '@/Context/LanguageContext';
 import {
     Landmark,
@@ -128,16 +129,25 @@ export default function Home({ services = [], partners = [], posts = [], members
             <section className="bg-white pt-28 sm:pt-32 pb-0">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 lg:pb-28">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center">
-                        {/* Photo panel */}
+                        {/* Logo panel — distinguishes this section from the photo used in Présentation below */}
                         <RevealOnScroll direction="right" className="relative order-2 lg:order-1 pb-8 pl-8 sm:pb-10 sm:pl-10 max-w-md mx-auto lg:mx-0">
                             <div className="hidden sm:block absolute left-0 bottom-0 w-full h-full rounded-3xl border-2 border-[#0B4F71]/20" />
-                            <div className="relative rounded-3xl overflow-hidden aspect-[4/5] shadow-2xl shadow-[#0B1F33]/20">
-                                <img
-                                    src="/images/christelle-basilua-semy.jpeg"
-                                    alt="L'équipe OMYA Capital"
-                                    className="w-full h-full object-cover object-top"
+                            <div className="relative rounded-3xl overflow-hidden aspect-[4/5] shadow-2xl shadow-[#0B1F33]/20 flex items-center justify-center bg-white border-x border-x-[#0B4F71]/10 border-y-4 border-y-[#0B4F71]">
+                                <div
+                                    className="absolute inset-0 opacity-[0.05] pointer-events-none"
+                                    style={{
+                                        backgroundImage: 'radial-gradient(circle, rgba(11,79,113,0.9) 1px, transparent 1px)',
+                                        backgroundSize: '28px 28px',
+                                    }}
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#0B1F33]/50 via-[#0B1F33]/10 to-transparent" />
+                                <div className="absolute -right-16 -bottom-16 w-64 h-64 rounded-full bg-[#0B4F71]/5 blur-3xl pointer-events-none" />
+                                <div className="absolute -left-10 -top-10 w-48 h-48 rounded-full bg-[#0B4F71]/5 blur-3xl pointer-events-none" />
+                                {/* OmyaLogo's SVG viewBox leaves extra empty space on the right of the
+                                    wordmark, so centering its box alone still reads as left-shifted —
+                                    nudge it right so the letters themselves land on the panel's center. */}
+                                <div className="relative z-10" style={{ transform: 'translateX(17%)' }}>
+                                    <OmyaLogo variant="dark" height={76} />
+                                </div>
                             </div>
                         </RevealOnScroll>
 

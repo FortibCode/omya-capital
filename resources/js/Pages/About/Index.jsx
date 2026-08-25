@@ -113,7 +113,7 @@ export default function Index() {
             </section>
 
             {/* ── Mission — fond bleu marine ── */}
-            <section id="mission" className="scroll-mt-32 relative bg-[#0B1F33] py-24 lg:py-32 overflow-hidden">
+            <section id="mission" className="scroll-mt-32 relative bg-[#0B1F33] py-16 lg:py-20 overflow-hidden">
                 <div
                     className="absolute inset-0 opacity-[0.04] pointer-events-none"
                     style={{
@@ -140,7 +140,7 @@ export default function Index() {
             </section>
 
             {/* ── Vision — fond bleu intermédiaire ── */}
-            <section id="vision" className="scroll-mt-32 relative bg-[#0B2A45] py-24 lg:py-32 overflow-hidden">
+            <section id="vision" className="scroll-mt-32 relative bg-[#0B2A45] py-16 lg:py-20 overflow-hidden">
                 <div
                     className="absolute inset-0 opacity-[0.04] pointer-events-none"
                     style={{

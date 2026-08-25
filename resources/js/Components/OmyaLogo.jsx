@@ -1,9 +1,9 @@
 import React from 'react';
 
-export default function OmyaLogo({ variant = 'dark', className = '', height = 40 }) {
+export default function OmyaLogo({ variant = 'dark', className = '', height = 40, monochrome = false }) {
     const isLight = variant === 'light';
     const mainColor = isLight ? '#FFFFFF' : '#0F2C59';
-    const subColor = isLight ? '#7DD3FC' : '#0284C7';
+    const subColor = monochrome ? '#FFFFFF' : isLight ? '#7DD3FC' : '#0284C7';
 
     return (
         <div className={`inline-flex flex-col items-center select-none ${className}`}>
