@@ -12,6 +12,11 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        // Truncate tables to re-seed cleanly
+        TeamMember::query()->delete();
+        Partner::query()->delete();
+        Service::query()->delete();
+
         // Services
         $services = [
             [
@@ -48,25 +53,26 @@ class DatabaseSeeder extends Seeder
 
         // Équipe
         $team = [
-            ['name' => 'Christelle BASILUA SEMY', 'role_title' => 'Directrice Générale'],
-            ['name' => 'Suzick TOMA', 'role_title' => 'Directrice de mission'],
-            ['name' => 'Louis-Raymond GOMES', 'role_title' => 'Conseiller Juridique'],
-            ['name' => 'Sarah BONANA', 'role_title' => 'Assistante Exécutive'],
+            ['name' => 'Christelle BASILUA SEMY', 'role_title' => 'Directrice Générale', 'photo_path' => 'team/christelle-basilua-semy.jpeg'],
+            ['name' => 'Suzick TOMA', 'role_title' => 'Directrice de mission', 'photo_path' => 'team/suzic-iwolo.jpeg'],
+            ['name' => 'Louis-Raymond GOMES', 'role_title' => 'Conseiller Juridique', 'photo_path' => 'team/louis-raymond-gomes.jpeg'],
+            ['name' => 'Sarah BONANA', 'role_title' => 'Assistante Exécutive', 'photo_path' => 'team/sarah-bonana.jpeg'],
         ];
 
         foreach ($team as $index => $member) {
             TeamMember::create([
                 'name' => $member['name'],
                 'role_title' => $member['role_title'],
+                'photo_path' => $member['photo_path'],
                 'sort_order' => $index,
             ]);
         }
 
         // Partenaires
         $partners = [
-            ['name' => 'OMYA INVEST', 'logo_path' => null],
+            ['name' => 'OMYA INVEST', 'logo_path' => 'partners/omya-invest.png'],
             ['name' => 'AKIENI', 'logo_path' => 'partners/akieni.png'],
-            ['name' => 'BGFI', 'logo_path' => 'partners/bgfi-bank.jpeg'],
+            ['name' => 'BGFI', 'logo_path' => 'partners/bgfi-bank.png'],
         ];
 
         foreach ($partners as $index => $partner) {

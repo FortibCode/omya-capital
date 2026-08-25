@@ -12,7 +12,7 @@
 
         <!-- Hero image — preloaded only on the page that actually renders it -->
         @if (($page['component'] ?? null) === 'Home')
-            <link rel="preload" as="image" href="/images/business_meeting.webp" fetchpriority="high">
+            <link rel="preload" as="image" href="/images/christelle-basilua-semy.jpeg" fetchpriority="high">
         @endif
 
         <!-- Scripts -->

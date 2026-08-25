@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import OmyaLogo from '@/Components/OmyaLogo';
+import { useLanguage, SERVICE_SLUG_ORDER } from '@/Context/LanguageContext';
 
 import {
     ChevronDown,
@@ -17,8 +18,10 @@ import {
     BookOpen,
     Megaphone,
     Mail,
+    PhoneCall,
     Menu,
     X,
+    Globe,
 } from 'lucide-react';
 
 const IconLinkedIn = ({ className }) => (
@@ -37,52 +40,88 @@ const IconInstagram = ({ className }) => (
     </svg>
 );
 
-const ABOUT_ITEMS = [
-    { key: 'presentation', title: 'Présentation', href: '/a-propos#presentation', icon: Building2 },
-    { key: 'mission', title: 'Mission', href: '/a-propos#mission', icon: Target },
-    { key: 'vision', title: 'Vision', href: '/a-propos#vision', icon: Compass },
-    { key: 'valeurs', title: 'Valeurs', href: '/a-propos#valeurs', icon: ShieldCheck },
-];
+// Icons don't depend on language — titles/descriptions/labels come from
+// the active translation dictionary at render time inside the component.
+const ABOUT_ICONS = { presentation: Building2, mission: Target, vision: Compass, valeurs: ShieldCheck };
+const SERVICE_ICONS = {
+    'financement-de-projets': Landmark,
+    'fusions-acquisitions': Handshake,
+    restructuration: RefreshCcw,
+    'conseil-strategique': Compass,
+};
+const NEWS_ICONS = { actualites: Newspaper, publications: BookOpen, communiques: Megaphone };
 
-const SERVICE_ITEMS = [
-    {
-        key: 'financement-de-projets',
-        title: 'Financement de projets',
-        desc: 'Structuration et accès aux marchés de capitaux locaux et internationaux',
-        href: '/services#financement-de-projets',
-        icon: Landmark,
-    },
-    {
-        key: 'fusions-acquisitions',
-        title: 'Fusions & Acquisitions',
-        desc: 'Accompagnement buy-side & sell-side, négociation et closing',
-        href: '/services#fusions-acquisitions',
-        icon: Handshake,
-    },
-    {
-        key: 'restructuration',
-        title: 'Restructuration',
-        desc: 'Optimisation bilancielle, refinancement, plans de redressement',
-        href: '/services#restructuration',
-        icon: RefreshCcw,
-    },
-    {
-        key: 'conseil-strategique',
-        title: 'Conseil stratégique',
-        desc: 'Business plan, valorisation, préparation à l’investissement',
-        href: '/services#conseil-strategique',
-        icon: Compass,
-    },
-];
+/**
+ * Reusable Language Switcher Dropdown
+ */
+function LanguageSelector({ isOpaque }) {
+    const { lang, changeLanguage, languages } = useLanguage();
+    const [open, setOpen] = useState(false);
+    const currentLang = languages[lang] || languages.fr;
 
-const NEWS_ITEMS = [
-    { key: 'actualites', title: 'Actualités', href: route('news.index'), icon: Newspaper },
-    { key: 'publications', title: 'Publications', href: route('news.publications'), icon: BookOpen },
-    { key: 'communiques', title: 'Communiqués', href: route('news.communiques'), icon: Megaphone },
-];
+    return (
+        <div className="relative" onMouseLeave={() => setOpen(false)}>
+            <button
+                type="button"
+                onClick={() => setOpen(!open)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 ${
+                    isOpaque
+                        ? 'bg-[#0B4F71]/10 text-[#0B4F71] hover:bg-[#0B4F71]/20'
+                        : 'bg-white/15 text-white hover:bg-white/25 border border-white/20'
+                }`}
+            >
+                <Globe className="w-3.5 h-3.5" />
+                <span>{currentLang.flag}</span>
+                <span className="uppercase tracking-wider">{currentLang.code}</span>
+                <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+            </button>
+
+            <AnimatePresence>
+                {open && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 6, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 4, scale: 0.95 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute right-0 top-full mt-1.5 bg-[#0B1F33] border border-white/20 rounded-xl shadow-2xl p-1.5 z-50 min-w-[140px]"
+                    >
+                        {Object.values(languages).map((l) => (
+                            <button
+                                key={l.code}
+                                type="button"
+                                onClick={() => {
+                                    changeLanguage(l.code);
+                                    setOpen(false);
+                                }}
+                                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold text-left transition-all ${
+                                    lang === l.code
+                                        ? 'bg-[#0B4F71] text-white shadow-sm'
+                                        : 'text-white/80 hover:bg-white/10 hover:text-white'
+                                }`}
+                            >
+                                <span className="text-sm">{l.flag}</span>
+                                <span>{l.label}</span>
+                            </button>
+                        ))}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+}
 
 export default function HeaderNav() {
     const { url } = usePage();
+    const { t, lang, changeLanguage, languages } = useLanguage();
+
+    const aboutItems = t.nav.aboutItems.map((item) => ({ ...item, icon: ABOUT_ICONS[item.key] }));
+    const serviceItems = SERVICE_SLUG_ORDER.map((slug) => ({
+        key: slug,
+        ...t.servicesContent[slug],
+        href: `/services#${slug}`,
+        icon: SERVICE_ICONS[slug],
+    }));
+    const newsItems = t.nav.newsItems.map((item) => ({ ...item, href: route(item.routeName), icon: NEWS_ICONS[item.key] }));
 
     const [activeDropdown, setActiveDropdown] = useState(null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -96,9 +135,6 @@ export default function HeaderNav() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // Safety net: since the header persists across page navigations (no remount),
-    // any open dropdown/drawer must be force-closed whenever the route actually
-    // changes — otherwise a stale menu can stay rendered on top of the new page.
     useEffect(() => {
         setActiveDropdown(null);
         setMobileMenuOpen(false);
@@ -145,14 +181,12 @@ export default function HeaderNav() {
         setMobileSection((current) => (current === id ? null : id));
     };
 
-    // The header stays transparent-over-dark only at the very top of the page,
-    // with nothing else open — any dropdown/drawer/scroll makes it go opaque.
     const isOpaque = scrolled || mobileMenuOpen || Boolean(activeDropdown);
 
-    const linkBase = isOpaque ? 'text-slate-800 hover:text-[#0B4F71]' : 'text-white hover:text-sky-200';
-    const linkActive = isOpaque ? 'text-[#0B4F71]' : 'text-sky-200';
-    const chevronIdle = isOpaque ? 'text-slate-400' : 'text-white/60';
-    const underlineColor = isOpaque ? 'bg-[#0B4F71]' : 'bg-sky-300';
+    const linkBase = isOpaque ? 'text-[#0B1F33] hover:text-[#0B4F71]' : 'text-white hover:text-white/80';
+    const linkActive = isOpaque ? 'text-[#0B4F71]' : 'text-white font-black';
+    const chevronIdle = isOpaque ? 'text-[#0B1F33]/60' : 'text-white/60';
+    const underlineColor = isOpaque ? 'bg-[#0B4F71]' : 'bg-white';
 
     return (
         <>
@@ -166,23 +200,29 @@ export default function HeaderNav() {
                     <div className="max-w-[1600px] mx-auto px-6 xl:px-10">
                         <div className="h-8 flex items-center justify-between text-[11px] font-semibold tracking-widest uppercase">
                             <div className="flex items-center gap-4">
-                                <span className="text-sky-300 font-extrabold">OMYA CAPITAL</span>
+                                <span className="text-white font-extrabold">OMYA CAPITAL</span>
                                 <span className="w-px h-3 bg-white/20" />
-                                <span className="text-white/80 font-medium">Redéfinir l&rsquo;investissement en Afrique Centrale</span>
+                                <span className="text-white/80 font-medium">{t.tagline}</span>
                             </div>
-                            <div className="flex items-center gap-4">
-                                {[IconLinkedIn, IconFacebook, IconInstagram].map((Icon, i) => (
-                                    <span
-                                        key={i}
-                                        title="Bientôt disponible"
-                                        className="text-white/50 hover:text-sky-300 cursor-not-allowed transition-colors duration-200 relative group"
-                                    >
-                                        <Icon className="w-[18px] h-[18px]" />
-                                        <span className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-[#0B1F33] text-white text-[10px] font-semibold px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50 border border-white/10">
-                                            Bientôt disponible
-                                        </span>
-                                    </span>
-                                ))}
+                            <div className="flex items-center gap-5">
+                                <a
+                                    href="tel:+242050987541"
+                                    className="flex items-center gap-1.5 normal-case tracking-normal font-semibold text-white/70 hover:text-white transition-colors duration-200"
+                                >
+                                    <PhoneCall className="w-3.5 h-3.5" />
+                                    <span>+242 05098 75 41</span>
+                                </a>
+                                <a
+                                    href="mailto:contact@omya-capital.com"
+                                    className="hidden xl:flex items-center gap-1.5 normal-case tracking-normal font-semibold text-white/70 hover:text-white transition-colors duration-200"
+                                >
+                                    <Mail className="w-3.5 h-3.5" />
+                                    <span>contact@omya-capital.com</span>
+                                </a>
+                                <span className="w-px h-3 bg-white/20" />
+
+                                {/* Topbar Language Selector */}
+                                <LanguageSelector isOpaque={false} />
                             </div>
                         </div>
                     </div>
@@ -212,15 +252,15 @@ export default function HeaderNav() {
                                             isCurrentRoute(route('home')) ? linkActive : linkBase
                                         }`}
                                     >
-                                        Accueil
+                                        {t.nav.home}
                                         {isCurrentRoute(route('home')) && (
                                             <motion.span layoutId="nav-active" className={`absolute left-4 right-4 -bottom-[1px] h-[3px] rounded-full ${underlineColor}`} />
                                         )}
                                     </Link>
 
                                     {[
-                                        { id: 'about', label: 'À propos' },
-                                        { id: 'services', label: 'Services' },
+                                        { id: 'about', label: t.nav.about },
+                                        { id: 'services', label: t.nav.services },
                                     ].map(({ id, label }) => {
                                         const isOpen = activeDropdown === id;
                                         return (
@@ -250,7 +290,7 @@ export default function HeaderNav() {
                                             isCurrentRoute(route('team')) ? linkActive : linkBase
                                         }`}
                                     >
-                                        Équipe
+                                        {t.nav.team}
                                     </Link>
 
                                     <Link
@@ -262,7 +302,7 @@ export default function HeaderNav() {
                                             isCurrentRoute(route('partners')) ? linkActive : linkBase
                                         }`}
                                     >
-                                        Partenaires
+                                        {t.nav.partners}
                                     </Link>
 
                                     <div className="relative" onMouseEnter={() => setActiveDropdown('actualites')}>
@@ -275,7 +315,7 @@ export default function HeaderNav() {
                                                 activeDropdown === 'actualites' ? linkActive : linkBase
                                             }`}
                                         >
-                                            Actualités
+                                            {t.nav.news}
                                             <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${activeDropdown === 'actualites' ? `rotate-180 ${linkActive}` : chevronIdle}`} />
                                         </button>
                                     </div>
@@ -289,7 +329,7 @@ export default function HeaderNav() {
                                             isCurrentRoute(route('documents.index')) ? linkActive : linkBase
                                         }`}
                                     >
-                                        Documents
+                                        {t.nav.documents}
                                     </Link>
 
                                     <Link
@@ -301,13 +341,15 @@ export default function HeaderNav() {
                                             isCurrentRoute(route('contact')) ? linkActive : linkBase
                                         }`}
                                     >
-                                        Contact
+                                        {t.nav.contact}
                                     </Link>
                                 </div>
                             </nav>
 
-                            {/* DESKTOP CTA */}
-                            <div className="hidden lg:flex items-center gap-3">
+                            {/* DESKTOP CTA & LANG SELECTOR */}
+                            <div className="hidden lg:flex items-center gap-4">
+                                <LanguageSelector isOpaque={isOpaque} />
+
                                 <Link
                                     href={route('contact')}
                                     prefetch
@@ -320,7 +362,7 @@ export default function HeaderNav() {
                                     }`}
                                 >
                                     <Mail className="w-4 h-4" />
-                                    <span>Prendre contact</span>
+                                    <span>{t.nav.contactBtn}</span>
                                 </Link>
                             </div>
 
@@ -356,7 +398,7 @@ export default function HeaderNav() {
                         >
                             <div className="max-w-[1600px] mx-auto px-8 py-6">
                                 <div className="grid grid-cols-4 gap-4 max-w-3xl">
-                                    {ABOUT_ITEMS.map((item) => {
+                                    {aboutItems.map((item) => {
                                         const Icon = item.icon;
                                         return (
                                             <Link
@@ -390,9 +432,9 @@ export default function HeaderNav() {
                             className="hidden xl:block absolute left-0 right-0 top-full bg-white border-b border-slate-200 shadow-[0_20px_45px_rgba(15,23,42,0.10)]"
                         >
                             <div className="max-w-[1280px] mx-auto px-8 py-8">
-                                <div className="text-[10px] font-extrabold tracking-[0.18em] text-[#B08D2C] uppercase mb-5">Nos expertises</div>
+                                <div className="text-[10px] font-extrabold tracking-[0.18em] text-[#0B4F71] uppercase mb-5">{t.nav.ourServices}</div>
                                 <div className="grid grid-cols-4 gap-6">
-                                    {SERVICE_ITEMS.map((item) => {
+                                    {serviceItems.map((item) => {
                                         const Icon = item.icon;
                                         return (
                                             <Link
@@ -433,7 +475,7 @@ export default function HeaderNav() {
                         >
                             <div className="max-w-[1600px] mx-auto px-8 py-6">
                                 <div className="grid grid-cols-3 gap-4 max-w-2xl">
-                                    {NEWS_ITEMS.map((item) => {
+                                    {newsItems.map((item) => {
                                         const Icon = item.icon;
                                         return (
                                             <Link
@@ -467,15 +509,36 @@ export default function HeaderNav() {
                             className="xl:hidden absolute left-0 right-0 top-full bg-white border-b border-slate-200 shadow-2xl overflow-hidden"
                         >
                             <div className="max-h-[calc(100vh-80px)] overflow-y-auto">
-                                <div className="px-5 py-5">
+                                <div className="px-5 py-5 space-y-4">
+                                    {/* Mobile Language Switcher */}
+                                    <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                                        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Langue / Language</span>
+                                        <div className="flex items-center gap-1.5">
+                                            {Object.values(languages).map((l) => (
+                                                <button
+                                                    key={l.code}
+                                                    type="button"
+                                                    onClick={() => changeLanguage(l.code)}
+                                                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+                                                        lang === l.code
+                                                            ? 'bg-[#0B4F71] text-white shadow-sm'
+                                                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                                    }`}
+                                                >
+                                                    {l.flag} <span className="uppercase">{l.code}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
                                     <Link
                                         href={route('home')}
                                         onClick={closeMenus}
-                                        className={`flex items-center justify-between py-4 border-b border-slate-100 ${
+                                        className={`flex items-center justify-between py-3 border-b border-slate-100 ${
                                             isCurrentRoute(route('home')) ? 'text-[#0B4F71]' : 'text-[#0B1F33]'
                                         }`}
                                     >
-                                        <span className="text-sm font-bold">Accueil</span>
+                                        <span className="text-sm font-bold">{t.nav.home}</span>
                                         <ArrowRight className="w-4 h-4" />
                                     </Link>
 
@@ -485,16 +548,16 @@ export default function HeaderNav() {
                                             <button
                                                 type="button"
                                                 onClick={() => toggleMobileSection('about')}
-                                                className="w-full flex items-center justify-between py-4 text-left"
+                                                className="w-full flex items-center justify-between py-3 text-left"
                                             >
-                                                <span className="text-sm font-bold text-[#0B1F33]">À propos</span>
+                                                <span className="text-sm font-bold text-[#0B1F33]">{t.nav.about}</span>
                                                 <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${mobileSection === 'about' ? 'rotate-180 text-[#0B4F71]' : ''}`} />
                                             </button>
                                             <AnimatePresence>
                                                 {mobileSection === 'about' && (
                                                     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
                                                         <div className="pb-4 space-y-1">
-                                                            {ABOUT_ITEMS.map((item) => {
+                                                            {aboutItems.map((item) => {
                                                                 const Icon = item.icon;
                                                                 return (
                                                                     <Link key={item.key} href={item.href} onClick={closeMenus} className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors">
@@ -516,16 +579,16 @@ export default function HeaderNav() {
                                             <button
                                                 type="button"
                                                 onClick={() => toggleMobileSection('services')}
-                                                className="w-full flex items-center justify-between py-4 text-left"
+                                                className="w-full flex items-center justify-between py-3 text-left"
                                             >
-                                                <span className="text-sm font-bold text-[#0B1F33]">Services</span>
+                                                <span className="text-sm font-bold text-[#0B1F33]">{t.nav.services}</span>
                                                 <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${mobileSection === 'services' ? 'rotate-180 text-[#0B4F71]' : ''}`} />
                                             </button>
                                             <AnimatePresence>
                                                 {mobileSection === 'services' && (
                                                     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
                                                         <div className="pb-4 space-y-1">
-                                                            {SERVICE_ITEMS.map((item) => {
+                                                            {serviceItems.map((item) => {
                                                                 const Icon = item.icon;
                                                                 return (
                                                                     <Link key={item.key} href={item.href} onClick={closeMenus} className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors">
@@ -545,13 +608,13 @@ export default function HeaderNav() {
                                             </AnimatePresence>
                                         </div>
 
-                                        <Link href={route('team')} onClick={closeMenus} className="flex items-center justify-between py-4">
-                                            <span className="text-sm font-bold text-[#0B1F33]">Équipe</span>
+                                        <Link href={route('team')} onClick={closeMenus} className="flex items-center justify-between py-3">
+                                            <span className="text-sm font-bold text-[#0B1F33]">{t.nav.team}</span>
                                             <ArrowRight className="w-4 h-4 text-slate-400" />
                                         </Link>
 
-                                        <Link href={route('partners')} onClick={closeMenus} className="flex items-center justify-between py-4">
-                                            <span className="text-sm font-bold text-[#0B1F33]">Partenaires</span>
+                                        <Link href={route('partners')} onClick={closeMenus} className="flex items-center justify-between py-3">
+                                            <span className="text-sm font-bold text-[#0B1F33]">{t.nav.partners}</span>
                                             <ArrowRight className="w-4 h-4 text-slate-400" />
                                         </Link>
 
@@ -560,16 +623,16 @@ export default function HeaderNav() {
                                             <button
                                                 type="button"
                                                 onClick={() => toggleMobileSection('actualites')}
-                                                className="w-full flex items-center justify-between py-4 text-left"
+                                                className="w-full flex items-center justify-between py-3 text-left"
                                             >
-                                                <span className="text-sm font-bold text-[#0B1F33]">Actualités</span>
+                                                <span className="text-sm font-bold text-[#0B1F33]">{t.nav.news}</span>
                                                 <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${mobileSection === 'actualites' ? 'rotate-180 text-[#0B4F71]' : ''}`} />
                                             </button>
                                             <AnimatePresence>
                                                 {mobileSection === 'actualites' && (
                                                     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
                                                         <div className="pb-4 space-y-1">
-                                                            {NEWS_ITEMS.map((item) => {
+                                                            {newsItems.map((item) => {
                                                                 const Icon = item.icon;
                                                                 return (
                                                                     <Link key={item.key} href={item.href} onClick={closeMenus} className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors">
@@ -586,25 +649,25 @@ export default function HeaderNav() {
                                             </AnimatePresence>
                                         </div>
 
-                                        <Link href={route('documents.index')} onClick={closeMenus} className="flex items-center justify-between py-4">
-                                            <span className="text-sm font-bold text-[#0B1F33]">Documents</span>
+                                        <Link href={route('documents.index')} onClick={closeMenus} className="flex items-center justify-between py-3">
+                                            <span className="text-sm font-bold text-[#0B1F33]">{t.nav.documents}</span>
                                             <ArrowRight className="w-4 h-4 text-slate-400" />
                                         </Link>
 
-                                        <Link href={route('contact')} onClick={closeMenus} className="flex items-center justify-between py-4">
-                                            <span className="text-sm font-bold text-[#0B1F33]">Contact</span>
+                                        <Link href={route('contact')} onClick={closeMenus} className="flex items-center justify-between py-3">
+                                            <span className="text-sm font-bold text-[#0B1F33]">{t.nav.contact}</span>
                                             <ArrowRight className="w-4 h-4 text-slate-400" />
                                         </Link>
                                     </div>
 
-                                    <div className="pt-5 border-t border-slate-100 mt-2">
+                                    <div className="pt-4 border-t border-slate-100 mt-2">
                                         <Link
                                             href={route('contact')}
                                             onClick={closeMenus}
                                             className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-[#0B4F71] text-white text-xs font-extrabold"
                                         >
                                             <Mail className="w-4 h-4" />
-                                            Prendre contact
+                                            {t.nav.contactBtn}
                                         </Link>
                                     </div>
                                 </div>

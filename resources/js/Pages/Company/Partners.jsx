@@ -2,34 +2,39 @@ import React from 'react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import { Head } from '@inertiajs/react';
 import PageHero from '@/Components/PageHero';
-import RevealOnScroll, { staggerDelay } from '@/Components/RevealOnScroll';
+import RevealOnScroll from '@/Components/RevealOnScroll';
+import CarCarouselTrack from '@/Components/CarCarouselTrack';
+import { useLanguage } from '@/Context/LanguageContext';
 import { Building2, ImageIcon } from 'lucide-react';
 
 export default function Partners({ partners = [] }) {
+    const { t } = useLanguage();
+
     return (
         <>
-            <Head title="Partenaires" />
+            <Head title={t.nav.partners} />
 
-            <PageHero eyebrow="Réseau Partenaire" icon={Building2} title="Nos Partenaires" />
+            <PageHero eyebrow={t.partners.heroEyebrow} icon={Building2} title={t.partners.heroTitle} />
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-                    {partners.map((p, idx) => (
-                        <RevealOnScroll key={p.id} delay={staggerDelay(idx, 0.1)}>
-                            <div className="group bg-white border border-slate-100 hover:border-[#0B4F71]/25 rounded-2xl p-10 shadow-sm hover:shadow-xl hover:shadow-slate-900/5 transition-all duration-500 text-center">
-                                <div className="w-24 h-24 rounded-2xl bg-[#F6FAFC] border border-slate-200 flex items-center justify-center mx-auto mb-6 transition-transform duration-500 group-hover:scale-105">
+            <section className="bg-white py-16 lg:py-24">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <RevealOnScroll>
+                        <CarCarouselTrack
+                            items={partners}
+                            interval={3400}
+                            renderItem={(p) => (
+                                <div className="bg-white border border-[#0B4F71]/10 rounded-2xl shadow-sm hover:shadow-xl hover:shadow-[#0B4F71]/10 hover:border-[#0B4F71]/25 transition-all duration-500 hover:-translate-y-1 h-full min-h-[200px] flex items-center justify-center p-8">
                                     {p.logo_path ? (
-                                        <img src={`/storage/${p.logo_path}`} alt={p.name} className="max-w-[70%] max-h-[70%] object-contain" />
+                                        <img src={`/storage/${p.logo_path}`} alt={p.name} className="w-full h-full object-contain" />
                                     ) : (
-                                        <ImageIcon className="w-8 h-8 text-slate-300" />
+                                        <ImageIcon className="w-10 h-10 text-[#0B4F71]/30" />
                                     )}
                                 </div>
-                                <h3 className="text-base font-bold text-slate-900">{p.name}</h3>
-                            </div>
-                        </RevealOnScroll>
-                    ))}
+                            )}
+                        />
+                    </RevealOnScroll>
                 </div>
-            </div>
+            </section>
         </>
     );
 }
