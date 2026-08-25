@@ -25,4 +25,6 @@ Route::get('/documents', [DocumentController::class, 'index'])->name('documents.
 Route::get('/documents/{document}/telecharger', [DocumentController::class, 'download'])->name('documents.download');
 
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::post('/contact', [ContactController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('contact.store');
