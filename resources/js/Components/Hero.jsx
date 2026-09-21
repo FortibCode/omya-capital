@@ -43,7 +43,7 @@ export default function Hero() {
                     opacity: [0.35, 0.55, 0.35],
                 }}
                 transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute -left-40 top-1/4 w-[550px] h-[550px] rounded-full bg-[#0B4F71]/40 blur-3xl pointer-events-none"
+                className="absolute -left-40 top-1/4 w-[550px] h-[550px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(11,79,113,0.4) 0%, transparent 70%)' }}
             />
             <motion.div
                 animate={{
@@ -51,9 +51,9 @@ export default function Hero() {
                     opacity: [0.25, 0.45, 0.25],
                 }}
                 transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-                className="absolute right-0 bottom-0 w-[500px] h-[500px] rounded-full bg-[#0B4F71]/25 blur-3xl pointer-events-none"
+                className="absolute right-0 bottom-0 w-[500px] h-[500px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(11,79,113,0.25) 0%, transparent 70%)' }}
             />
-            <div className="absolute left-1/3 top-1/2 -translate-y-1/2 w-[350px] h-[350px] rounded-full bg-white/5 blur-3xl pointer-events-none" />
+            <div className="absolute left-1/3 top-1/2 -translate-y-1/2 w-[350px] h-[350px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%)' }} />
 
             {/* Decorative progress rail */}
             <div className="hidden lg:flex flex-col items-center gap-3 absolute left-6 xl:left-10 top-1/2 -translate-y-1/2 z-20">
@@ -82,7 +82,7 @@ export default function Hero() {
                             className="flex items-center justify-center lg:justify-start gap-3 mb-8"
                         >
                             <span className="w-10 h-px bg-white/40" />
-                            <span className="text-[11px] font-bold uppercase tracking-[0.28em] text-white">OMYA CAPITAL</span>
+                            <span className="text-[13px] font-bold uppercase tracking-[0.28em] text-white">OMYA CAPITAL</span>
                         </motion.div>
 
                         {/* Title Headline */}

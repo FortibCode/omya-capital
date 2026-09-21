@@ -9,6 +9,7 @@ import CarCarouselTrack from '@/Components/CarCarouselTrack';
 import TeamCard from '@/Components/TeamCard';
 import OmyaLogo from '@/Components/OmyaLogo';
 import { useLanguage, translateService, translateMember } from '@/Context/LanguageContext';
+import useInView from '@/Hooks/useInView';
 import {
     Landmark,
     Handshake,
@@ -61,14 +62,15 @@ export default function Home({ services = [], partners = [], posts = [], members
     // Auto-cycling active step for Pourquoi OMYA Capital
     const [activePillarIndex, setActivePillarIndex] = useState(0);
     const [isPillarsHovered, setIsPillarsHovered] = useState(false);
+    const pillarsInView = useInView(stepperRef);
 
     useEffect(() => {
-        if (isPillarsHovered) return;
+        if (isPillarsHovered || !pillarsInView) return;
         const timer = setInterval(() => {
             setActivePillarIndex((prev) => (prev + 1) % pillars.length);
         }, 3200);
         return () => clearInterval(timer);
-    }, [isPillarsHovered, pillars.length]);
+    }, [isPillarsHovered, pillarsInView, pillars.length]);
 
     // Fallback team list with real team images
     const displayMembers = (members.length > 0 ? members : [
@@ -116,7 +118,7 @@ export default function Home({ services = [], partners = [], posts = [], members
                                 >
                                     <IconComp className="w-5 h-5" />
                                 </div>
-                                <span className="text-xs sm:text-[13px] font-extrabold leading-tight text-white">
+                                <span className="text-xs sm:text-[15px] font-extrabold leading-tight text-white">
                                     {srv.title}
                                 </span>
                             </Link>
@@ -140,13 +142,12 @@ export default function Home({ services = [], partners = [], posts = [], members
                                         backgroundSize: '28px 28px',
                                     }}
                                 />
-                                <div className="absolute -right-16 -bottom-16 w-64 h-64 rounded-full bg-[#0B4F71]/5 blur-3xl pointer-events-none" />
-                                <div className="absolute -left-10 -top-10 w-48 h-48 rounded-full bg-[#0B4F71]/5 blur-3xl pointer-events-none" />
-                                {/* OmyaLogo's SVG viewBox leaves extra empty space on the right of the
-                                    wordmark, so centering its box alone still reads as left-shifted —
-                                    nudge it right so the letters themselves land on the panel's center. */}
-                                <div className="relative z-10" style={{ transform: 'translateX(17%)' }}>
-                                    <OmyaLogo variant="dark" height={76} />
+                                <div className="absolute -right-16 -bottom-16 w-64 h-64 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(11,79,113,0.05) 0%, transparent 70%)' }} />
+                                <div className="absolute -left-10 -top-10 w-48 h-48 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(11,79,113,0.05) 0%, transparent 70%)' }} />
+                                {/* Sized against the panel rather than in fixed pixels: the panel narrows
+                                    with the viewport, and a pinned width overflowed it on phones. */}
+                                <div className="relative z-10 w-full flex justify-center">
+                                    <OmyaLogo variant="dark" fluid className="w-[62%] max-w-[230px] h-auto" />
                                 </div>
                             </div>
                         </RevealOnScroll>
@@ -236,8 +237,8 @@ export default function Home({ services = [], partners = [], posts = [], members
                         backgroundSize: '28px 28px',
                     }}
                 />
-                <div className="absolute -left-40 top-1/3 w-[500px] h-[500px] rounded-full bg-[#0B4F71]/30 blur-3xl pointer-events-none" />
-                <div className="absolute right-0 bottom-0 w-[300px] h-[300px] rounded-full bg-[#0B4F71]/20 blur-3xl pointer-events-none" />
+                <div className="absolute -left-40 top-1/3 w-[500px] h-[500px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(11,79,113,0.3) 0%, transparent 70%)' }} />
+                <div className="absolute right-0 bottom-0 w-[300px] h-[300px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(11,79,113,0.2) 0%, transparent 70%)' }} />
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -265,8 +266,8 @@ export default function Home({ services = [], partners = [], posts = [], members
                                     CB
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="text-xs font-extrabold text-white leading-snug">{director.name}</p>
-                                    <p className="text-[10px] text-white/60">{director.role_title}</p>
+                                    <p className="text-sm font-extrabold text-white leading-snug">{director.name}</p>
+                                    <p className="text-xs text-white/70">{director.role_title}</p>
                                 </div>
                             </div>
                         </RevealOnScroll>
@@ -279,12 +280,12 @@ export default function Home({ services = [], partners = [], posts = [], members
                                 <h2 className="text-3xl sm:text-4xl font-black text-white mb-7 leading-tight">{t.home.aboutTitle}</h2>
                             </RevealOnScroll>
                             <RevealOnScroll delay={0.2}>
-                                <p className="text-[15px] text-white/70 leading-relaxed mb-4">
+                                <p className="text-lg text-white/80 leading-relaxed mb-5">
                                     {t.home.aboutP1}
                                 </p>
                             </RevealOnScroll>
                             <RevealOnScroll delay={0.28}>
-                                <p className="text-[15px] text-white/70 leading-relaxed mb-9">
+                                <p className="text-lg text-white/80 leading-relaxed mb-9">
                                     {t.home.aboutP2}
                                 </p>
                             </RevealOnScroll>
@@ -325,7 +326,7 @@ export default function Home({ services = [], partners = [], posts = [], members
                                             <IconComp className="w-5 h-5" />
                                         </div>
                                         <h3 className="text-sm font-extrabold text-[#0B1F33] mb-2.5">{srv.title}</h3>
-                                        <p className="text-xs text-[#0B2A45]/55 leading-relaxed mb-8">{srv.description}</p>
+                                        <p className="text-base text-[#0B2A45]/75 leading-relaxed mb-8">{srv.description}</p>
                                         <div className="absolute bottom-7 left-7 flex items-center gap-1.5 text-[#0B4F71] font-semibold text-xs">
                                             <span>{t.home.learnMore}</span>
                                             <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1.5" />
@@ -348,7 +349,7 @@ export default function Home({ services = [], partners = [], posts = [], members
                         backgroundSize: '32px 32px',
                     }}
                 />
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[#0B4F71]/20 blur-3xl pointer-events-none" />
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(11,79,113,0.2) 0%, transparent 70%)' }} />
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <RevealOnScroll className="max-w-2xl mx-auto mb-16 text-center">
                         <span className="text-white/50 text-xs font-extrabold uppercase tracking-[0.2em] mb-4 block">{t.home.teamEyebrow}</span>
@@ -428,7 +429,7 @@ export default function Home({ services = [], partners = [], posts = [], members
                         backgroundSize: '28px 28px',
                     }}
                 />
-                <div className="absolute -right-32 top-0 w-[400px] h-[400px] rounded-full bg-[#0B4F71]/25 blur-3xl pointer-events-none" />
+                <div className="absolute -right-32 top-0 w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(11,79,113,0.25) 0%, transparent 70%)' }} />
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <RevealOnScroll className="text-center max-w-2xl mx-auto mb-16">
                         <span className="text-white/50 text-xs font-extrabold uppercase tracking-[0.2em] mb-4 block">{t.home.newsEyebrow}</span>
@@ -466,8 +467,8 @@ export default function Home({ services = [], partners = [], posts = [], members
                                 backgroundSize: '26px 26px',
                             }}
                         />
-                        <div className="absolute -left-24 -bottom-24 w-72 h-72 rounded-full bg-white/5 blur-3xl pointer-events-none" />
-                        <div className="absolute -right-24 -top-24 w-72 h-72 rounded-full bg-white/5 blur-3xl pointer-events-none" />
+                        <div className="absolute -left-24 -bottom-24 w-72 h-72 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%)' }} />
+                        <div className="absolute -right-24 -top-24 w-72 h-72 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%)' }} />
                         <div className="relative z-10 p-12 sm:p-16 text-white text-center">
                             <h2 className="text-2xl sm:text-3xl font-black mb-5">{t.home.ctaTitle}</h2>
                             <p className="text-white/70 text-sm leading-relaxed max-w-xl mx-auto mb-9">

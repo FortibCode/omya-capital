@@ -14,7 +14,7 @@ export default function Partners({ partners = [] }) {
         <>
             <Head title={t.nav.partners} />
 
-            <PageHero eyebrow={t.partners.heroEyebrow} icon={Building2} title={t.partners.heroTitle} />
+            <PageHero title={t.partners.heroTitle} />
 
             <section className="bg-white py-16 lg:py-24">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

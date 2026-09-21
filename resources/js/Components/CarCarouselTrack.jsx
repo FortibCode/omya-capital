@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '@/Context/LanguageContext';
+import useInView from '@/Hooks/useInView';
 
 /**
  * CarCarouselTrack:
@@ -13,14 +14,16 @@ export default function CarCarouselTrack({ items = [], renderItem, autoPlay = tr
     const { t } = useLanguage();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
+    const rootRef = useRef(null);
+    const inView = useInView(rootRef);
 
     useEffect(() => {
-        if (!autoPlay || isHovered || items.length <= 1) return;
+        if (!autoPlay || isHovered || !inView || items.length <= 1) return;
         const timer = setInterval(() => {
             setCurrentIndex((prev) => (prev + 1) % items.length);
         }, interval);
         return () => clearInterval(timer);
-    }, [autoPlay, isHovered, items.length, interval]);
+    }, [autoPlay, isHovered, inView, items.length, interval]);
 
     if (!items || items.length === 0) return null;
 
@@ -41,6 +44,7 @@ export default function CarCarouselTrack({ items = [], renderItem, autoPlay = tr
 
     return (
         <div
+            ref={rootRef}
             className="relative w-full max-w-6xl mx-auto py-6"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -154,12 +158,17 @@ export default function CarCarouselTrack({ items = [], renderItem, autoPlay = tr
                         <button
                             key={i}
                             onClick={() => setCurrentIndex(i)}
-                            className={`h-2 rounded-full transition-all duration-500 ${
-                                i === currentIndex
-                                    ? 'w-8 bg-[#0B4F71]'
-                                    : 'w-2 bg-[#0B4F71]/25 hover:bg-[#0B4F71]/50'
-                            }`}
-                        />
+                            aria-label={`${i + 1}`}
+                            className="py-3 px-1 group/dot"
+                        >
+                            <span
+                                className={`block h-2 rounded-full transition-all duration-500 ${
+                                    i === currentIndex
+                                        ? 'w-8 bg-[#0B4F71]'
+                                        : 'w-2 bg-[#0B4F71]/25 group-hover/dot:bg-[#0B4F71]/50'
+                                }`}
+                            />
+                        </button>
                     ))}
                 </div>
 

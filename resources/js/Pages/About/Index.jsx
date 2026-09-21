@@ -40,10 +40,12 @@ export default function Index() {
         <>
             <Head title={t.nav.about} />
 
-            <PageHero eyebrow={t.nav.about} icon={Building2} title="OMYA Capital" description={t.about.heroDescription} />
+            <PageHero title="OMYA Capital" description={t.about.heroDescription} />
 
             {/* ── Nav sticky ── */}
-            <div className="bg-white border-b border-[#0B4F71]/10 sticky top-20 lg:top-24 z-30 shadow-md shadow-[#0B1F33]/5">
+            {/* Offsets match the scrolled header: 80px alone on small screens,
+                plus the 48px navy topbar that appears from lg up. */}
+            <div className="bg-white border-b border-[#0B4F71]/10 sticky top-[82px] lg:top-[130px] z-30 shadow-md shadow-[#0B1F33]/5">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-wrap justify-center gap-1 py-2">
                         {navItems.map((item) => {
@@ -52,7 +54,7 @@ export default function Index() {
                                 <a
                                     key={item.key}
                                     href={item.href}
-                                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-[#0B2A45]/60 hover:text-[#0B4F71] hover:bg-[#0B4F71]/5 transition-all duration-300"
+                                    className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold text-[#0B2A45]/60 hover:text-[#0B4F71] hover:bg-[#0B4F71]/5 transition-all duration-300"
                                 >
                                     <Icon className="w-4 h-4" />
                                     {item.title}
@@ -64,16 +66,16 @@ export default function Index() {
             </div>
 
             {/* ── Présentation — fond blanc ── */}
-            <section id="presentation" className="scroll-mt-32 bg-white py-24 lg:py-32">
+            <section id="presentation" className="scroll-mt-[150px] lg:scroll-mt-[200px] bg-white py-24 lg:py-32">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                         <RevealOnScroll>
                             <span className="text-[#0B4F71] text-xs font-extrabold uppercase tracking-[0.2em] mb-4 block">{t.about.presEyebrow}</span>
                             <h2 className="text-3xl sm:text-4xl font-black text-[#0B1F33] mb-7">{t.about.presTitle}</h2>
-                            <p className="text-[15px] text-[#0B2A45]/65 leading-relaxed mb-4">
+                            <p className="text-lg text-[#0B2A45]/80 leading-relaxed mb-5">
                                 {t.home.aboutP1}
                             </p>
-                            <p className="text-[15px] text-[#0B2A45]/65 leading-relaxed">
+                            <p className="text-lg text-[#0B2A45]/80 leading-relaxed">
                                 {t.home.aboutP2}
                             </p>
                         </RevealOnScroll>
@@ -102,8 +104,8 @@ export default function Index() {
                                     CB
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="text-xs font-extrabold text-[#0B1F33] leading-snug">{director.name}</p>
-                                    <p className="text-[10px] text-[#0B2A45]/50">{director.role_title}</p>
+                                    <p className="text-sm font-extrabold text-[#0B1F33] leading-snug">{director.name}</p>
+                                    <p className="text-xs text-[#0B2A45]/60">{director.role_title}</p>
                                 </div>
                             </div>
                         </RevealOnScroll>
@@ -113,7 +115,7 @@ export default function Index() {
             </section>
 
             {/* ── Mission — fond bleu marine ── */}
-            <section id="mission" className="scroll-mt-32 relative bg-[#0B1F33] py-16 lg:py-20 overflow-hidden">
+            <section id="mission" className="scroll-mt-[150px] lg:scroll-mt-[200px] relative bg-[#0B1F33] py-16 lg:py-20 overflow-hidden">
                 <div
                     className="absolute inset-0 opacity-[0.04] pointer-events-none"
                     style={{
@@ -121,7 +123,7 @@ export default function Index() {
                         backgroundSize: '28px 28px',
                     }}
                 />
-                <div className="absolute -right-32 -top-32 w-[480px] h-[480px] rounded-full bg-[#0B4F71]/30 blur-3xl pointer-events-none" />
+                <div className="absolute -right-32 -top-32 w-[480px] h-[480px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(11,79,113,0.3) 0%, transparent 70%)' }} />
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <RevealOnScroll className="max-w-3xl">
                         <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-white mb-8">
@@ -140,7 +142,7 @@ export default function Index() {
             </section>
 
             {/* ── Vision — fond bleu intermédiaire ── */}
-            <section id="vision" className="scroll-mt-32 relative bg-[#0B2A45] py-16 lg:py-20 overflow-hidden">
+            <section id="vision" className="scroll-mt-[150px] lg:scroll-mt-[200px] relative bg-[#0B2A45] py-16 lg:py-20 overflow-hidden">
                 <div
                     className="absolute inset-0 opacity-[0.04] pointer-events-none"
                     style={{
@@ -148,7 +150,7 @@ export default function Index() {
                         backgroundSize: '28px 28px',
                     }}
                 />
-                <div className="absolute left-0 bottom-0 w-[400px] h-[400px] rounded-full bg-[#0B4F71]/20 blur-3xl pointer-events-none" />
+                <div className="absolute left-0 bottom-0 w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(11,79,113,0.2) 0%, transparent 70%)' }} />
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <RevealOnScroll className="max-w-3xl">
                         <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-white mb-8">
@@ -167,13 +169,13 @@ export default function Index() {
             </section>
 
             {/* ── Valeurs — fond blanc ── */}
-            <section id="valeurs" className="scroll-mt-32 bg-white">
+            <section id="valeurs" className="scroll-mt-[150px] lg:scroll-mt-[200px] bg-white">
                 <WaveUp fill="#0B2A45" />
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-24 lg:pb-32">
                     <RevealOnScroll className="text-center mb-14">
                         <span className="text-[#0B4F71] text-xs font-extrabold uppercase tracking-[0.2em] mb-4 block">{t.about.valeursEyebrow}</span>
                         <h2 className="text-3xl sm:text-4xl font-black text-[#0B1F33] mb-4">{t.about.valeursTitle}</h2>
-                        <p className="text-sm text-[#0B2A45]/55 leading-relaxed max-w-2xl mx-auto">
+                        <p className="text-lg text-[#0B2A45]/75 leading-relaxed max-w-2xl mx-auto">
                             {t.about.valeursSubtitle}
                         </p>
                     </RevealOnScroll>
@@ -185,8 +187,8 @@ export default function Index() {
                                     <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#0B2A45] to-[#0B4F71] flex items-center justify-center text-white mb-5 transition-transform duration-500 group-hover:scale-110 shadow-md shadow-[#0B4F71]/25">
                                         <Icon className="w-5 h-5" />
                                     </div>
-                                    <h3 className="text-base font-extrabold text-[#0B1F33] mb-2">{title}</h3>
-                                    <p className="text-xs text-[#0B2A45]/55 leading-relaxed">{desc}</p>
+                                    <h3 className="text-lg font-extrabold text-[#0B1F33] mb-2.5">{title}</h3>
+                                    <p className="text-base text-[#0B2A45]/75 leading-relaxed">{desc}</p>
                                 </div>
                             </RevealOnScroll>
                         ))}
@@ -207,12 +209,12 @@ export default function Index() {
                         />
                         <div className="relative z-10 p-12 sm:p-16">
                             <h2 className="text-2xl sm:text-3xl font-black text-white mb-5">{t.about.ctaTitle}</h2>
-                            <p className="text-white/70 text-sm leading-relaxed max-w-xl mx-auto mb-9">
+                            <p className="text-white/80 text-lg leading-relaxed max-w-xl mx-auto mb-9">
                                 {t.about.ctaText}
                             </p>
                             <Link
                                 href={route('contact')}
-                                className="group inline-flex items-center gap-2 bg-white text-[#0B1F33] font-extrabold text-xs py-4 px-8 rounded-xl shadow-xl shadow-black/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/90"
+                                className="group inline-flex items-center gap-2 bg-white text-[#0B1F33] font-extrabold text-sm py-4 px-8 rounded-xl shadow-xl shadow-black/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/90"
                             >
                                 <span>{t.about.ctaBtn}</span>
                                 <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />

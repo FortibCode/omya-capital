@@ -3,6 +3,7 @@ import PublicLayout from '@/Layouts/PublicLayout';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import PageHero from '@/Components/PageHero';
 import RevealOnScroll, { staggerDelay } from '@/Components/RevealOnScroll';
+import SocialLinks, { hasSocialLinks } from '@/Components/SocialLinks';
 import { useLanguage, SERVICE_SLUG_ORDER } from '@/Context/LanguageContext';
 import { PhoneCall, Mail, MapPin, Share2, ArrowRight, CheckCircle2 } from 'lucide-react';
 
@@ -43,8 +44,6 @@ export default function Contact() {
             <Head title={t.nav.contact} />
 
             <PageHero
-                eyebrow={t.contact.heroEyebrow}
-                icon={PhoneCall}
                 title={t.contact.heroTitle}
                 description={t.contact.heroDescription}
             />
@@ -147,9 +146,12 @@ export default function Contact() {
                                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0B2A45] to-[#0B4F71] flex items-center justify-center text-white">
                                         <Share2 className="w-5 h-5" />
                                     </div>
-                                    <h3 className="text-base font-extrabold text-[#0B1F33]">{t.contact.socialTitle}</h3>
+                                    <h3 className="text-lg font-extrabold text-[#0B1F33]">{t.contact.socialTitle}</h3>
                                 </div>
-                                <p className="text-xs text-[#0B2A45]/45 italic">{t.contact.socialText}</p>
+                                <SocialLinks tone="light" />
+                                {!hasSocialLinks && (
+                                    <p className="text-sm text-[#0B2A45]/55 italic">{t.contact.socialText}</p>
+                                )}
                             </div>
                         </RevealOnScroll>
                     </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import OmyaLogo from '@/Components/OmyaLogo';
@@ -57,23 +57,49 @@ const NEWS_ICONS = { actualites: Newspaper, publications: BookOpen, communiques:
 function LanguageSelector({ isOpaque }) {
     const { lang, changeLanguage, languages } = useLanguage();
     const [open, setOpen] = useState(false);
+    const containerRef = useRef(null);
     const currentLang = languages[lang] || languages.fr;
 
+    // The panel hangs below the button with a small gap, so closing on mouse-leave
+    // fired the moment the cursor crossed that gap on its way to the options.
+    // Close on outside click / Escape instead — the same model as opening on click.
+    useEffect(() => {
+        if (!open) return;
+
+        const handlePointerDown = (event) => {
+            if (!containerRef.current?.contains(event.target)) setOpen(false);
+        };
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') setOpen(false);
+        };
+
+        document.addEventListener('mousedown', handlePointerDown);
+        document.addEventListener('touchstart', handlePointerDown);
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('mousedown', handlePointerDown);
+            document.removeEventListener('touchstart', handlePointerDown);
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [open]);
+
     return (
-        <div className="relative" onMouseLeave={() => setOpen(false)}>
+        <div className="relative" ref={containerRef}>
             <button
                 type="button"
+                aria-expanded={open}
+                aria-haspopup="true"
                 onClick={() => setOpen(!open)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 ${
+                className={`flex items-center gap-2 h-9 px-3.5 rounded-lg text-sm font-bold leading-none normal-case tracking-normal transition-all duration-300 ${
                     isOpaque
                         ? 'bg-[#0B4F71]/10 text-[#0B4F71] hover:bg-[#0B4F71]/20'
                         : 'bg-white/15 text-white hover:bg-white/25 border border-white/20'
                 }`}
             >
-                <Globe className="w-3.5 h-3.5" />
-                <span>{currentLang.flag}</span>
+                <Globe className="w-4 h-4" />
+                <span className="text-base leading-none">{currentLang.flag}</span>
                 <span className="uppercase tracking-wider">{currentLang.code}</span>
-                <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
             </button>
 
             <AnimatePresence>
@@ -83,7 +109,7 @@ function LanguageSelector({ isOpaque }) {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 4, scale: 0.95 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute right-0 top-full mt-1.5 bg-[#0B1F33] border border-white/20 rounded-xl shadow-2xl p-1.5 z-50 min-w-[140px]"
+                        className="absolute right-0 top-full mt-2 bg-[#0B1F33] border border-white/20 rounded-xl shadow-2xl p-2 z-50 min-w-[170px]"
                     >
                         {Object.values(languages).map((l) => (
                             <button
@@ -93,13 +119,13 @@ function LanguageSelector({ isOpaque }) {
                                     changeLanguage(l.code);
                                     setOpen(false);
                                 }}
-                                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold text-left transition-all ${
+                                className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-lg text-sm font-bold text-left transition-all ${
                                     lang === l.code
                                         ? 'bg-[#0B4F71] text-white shadow-sm'
                                         : 'text-white/80 hover:bg-white/10 hover:text-white'
                                 }`}
                             >
-                                <span className="text-sm">{l.flag}</span>
+                                <span className="text-base leading-none">{l.flag}</span>
                                 <span>{l.label}</span>
                             </button>
                         ))}
@@ -192,16 +218,16 @@ export default function HeaderNav() {
         <>
             <header
                 className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-                    isOpaque ? 'bg-white/95 backdrop-blur-xl shadow-[0_8px_30px_rgba(15,23,42,0.08)]' : 'bg-transparent'
+                    isOpaque ? 'bg-white shadow-[0_8px_30px_rgba(15,23,42,0.08)]' : 'bg-transparent'
                 }`}
             >
                 {/* TOPBAR */}
                 <div className="hidden lg:block bg-[#0B1F33] text-white">
                     <div className="max-w-[1600px] mx-auto px-6 xl:px-10">
-                        <div className="h-8 flex items-center justify-between text-[11px] font-semibold tracking-widest uppercase">
+                        <div className="h-12 flex items-center justify-between text-[13px] font-semibold tracking-widest uppercase">
                             <div className="flex items-center gap-4">
                                 <span className="text-white font-extrabold">OMYA CAPITAL</span>
-                                <span className="w-px h-3 bg-white/20" />
+                                <span className="w-px h-4 bg-white/20" />
                                 <span className="text-white/80 font-medium">{t.tagline}</span>
                             </div>
                             <div className="flex items-center gap-5">
@@ -219,7 +245,7 @@ export default function HeaderNav() {
                                     <Mail className="w-3.5 h-3.5" />
                                     <span>contact@omya-capital.com</span>
                                 </a>
-                                <span className="w-px h-3 bg-white/20" />
+                                <span className="w-px h-4 bg-white/20" />
 
                                 {/* Topbar Language Selector */}
                                 <LanguageSelector isOpaque={false} />
@@ -248,7 +274,7 @@ export default function HeaderNav() {
                                         prefetch
                                         onMouseEnter={() => setActiveDropdown(null)}
                                         onClick={() => setActiveDropdown(null)}
-                                        className={`relative px-4 2xl:px-5 py-3.5 text-sm 2xl:text-base font-extrabold tracking-wide transition-colors duration-300 ${
+                                        className={`relative px-3 2xl:px-5 py-3.5 text-sm 2xl:text-base font-extrabold tracking-wide whitespace-nowrap transition-colors duration-300 ${
                                             isCurrentRoute(route('home')) ? linkActive : linkBase
                                         }`}
                                     >
@@ -270,7 +296,7 @@ export default function HeaderNav() {
                                                     aria-expanded={isOpen}
                                                     aria-haspopup="true"
                                                     onClick={() => setActiveDropdown(isOpen ? null : id)}
-                                                    className={`relative inline-flex items-center gap-2 px-4 2xl:px-5 py-3.5 text-sm 2xl:text-base font-extrabold tracking-wide transition-colors duration-300 ${
+                                                    className={`relative inline-flex items-center gap-2 px-3 2xl:px-5 py-3.5 text-sm 2xl:text-base font-extrabold tracking-wide whitespace-nowrap transition-colors duration-300 ${
                                                         isOpen ? linkActive : linkBase
                                                     }`}
                                                 >
@@ -286,7 +312,7 @@ export default function HeaderNav() {
                                         prefetch
                                         onMouseEnter={() => setActiveDropdown(null)}
                                         onClick={() => setActiveDropdown(null)}
-                                        className={`px-4 2xl:px-5 py-3.5 text-sm 2xl:text-base font-extrabold tracking-wide transition-colors duration-300 ${
+                                        className={`px-3 2xl:px-5 py-3.5 text-sm 2xl:text-base font-extrabold tracking-wide whitespace-nowrap transition-colors duration-300 ${
                                             isCurrentRoute(route('team')) ? linkActive : linkBase
                                         }`}
                                     >
@@ -298,7 +324,7 @@ export default function HeaderNav() {
                                         prefetch
                                         onMouseEnter={() => setActiveDropdown(null)}
                                         onClick={() => setActiveDropdown(null)}
-                                        className={`px-4 2xl:px-5 py-3.5 text-sm 2xl:text-base font-extrabold tracking-wide transition-colors duration-300 ${
+                                        className={`px-3 2xl:px-5 py-3.5 text-sm 2xl:text-base font-extrabold tracking-wide whitespace-nowrap transition-colors duration-300 ${
                                             isCurrentRoute(route('partners')) ? linkActive : linkBase
                                         }`}
                                     >
@@ -311,7 +337,7 @@ export default function HeaderNav() {
                                             aria-expanded={activeDropdown === 'actualites'}
                                             aria-haspopup="true"
                                             onClick={() => setActiveDropdown(activeDropdown === 'actualites' ? null : 'actualites')}
-                                            className={`relative inline-flex items-center gap-2 px-4 2xl:px-5 py-3.5 text-sm 2xl:text-base font-extrabold tracking-wide transition-colors duration-300 ${
+                                            className={`relative inline-flex items-center gap-2 px-3 2xl:px-5 py-3.5 text-sm 2xl:text-base font-extrabold tracking-wide whitespace-nowrap transition-colors duration-300 ${
                                                 activeDropdown === 'actualites' ? linkActive : linkBase
                                             }`}
                                         >
@@ -325,7 +351,7 @@ export default function HeaderNav() {
                                         prefetch
                                         onMouseEnter={() => setActiveDropdown(null)}
                                         onClick={() => setActiveDropdown(null)}
-                                        className={`px-4 2xl:px-5 py-3.5 text-sm 2xl:text-base font-extrabold tracking-wide transition-colors duration-300 ${
+                                        className={`px-3 2xl:px-5 py-3.5 text-sm 2xl:text-base font-extrabold tracking-wide whitespace-nowrap transition-colors duration-300 ${
                                             isCurrentRoute(route('documents.index')) ? linkActive : linkBase
                                         }`}
                                     >
@@ -337,7 +363,7 @@ export default function HeaderNav() {
                                         prefetch
                                         onMouseEnter={() => setActiveDropdown(null)}
                                         onClick={() => setActiveDropdown(null)}
-                                        className={`px-4 2xl:px-5 py-3.5 text-sm 2xl:text-base font-extrabold tracking-wide transition-colors duration-300 ${
+                                        className={`px-3 2xl:px-5 py-3.5 text-sm 2xl:text-base font-extrabold tracking-wide whitespace-nowrap transition-colors duration-300 ${
                                             isCurrentRoute(route('contact')) ? linkActive : linkBase
                                         }`}
                                     >
@@ -346,10 +372,9 @@ export default function HeaderNav() {
                                 </div>
                             </nav>
 
-                            {/* DESKTOP CTA & LANG SELECTOR */}
-                            <div className="hidden lg:flex items-center gap-4">
-                                <LanguageSelector isOpaque={isOpaque} />
-
+                            {/* DESKTOP CTA — the language selector lives in the topbar only,
+                                so it isn't duplicated on the same screen. */}
+                            <div className="hidden lg:flex items-center gap-4 ml-auto">
                                 <Link
                                     href={route('contact')}
                                     prefetch
@@ -432,7 +457,7 @@ export default function HeaderNav() {
                             className="hidden xl:block absolute left-0 right-0 top-full bg-white border-b border-slate-200 shadow-[0_20px_45px_rgba(15,23,42,0.10)]"
                         >
                             <div className="max-w-[1280px] mx-auto px-8 py-8">
-                                <div className="text-[10px] font-extrabold tracking-[0.18em] text-[#0B4F71] uppercase mb-5">{t.nav.ourServices}</div>
+                                <div className="text-[12px] font-extrabold tracking-[0.18em] text-[#0B4F71] uppercase mb-5">{t.nav.ourServices}</div>
                                 <div className="grid grid-cols-4 gap-6">
                                     {serviceItems.map((item) => {
                                         const Icon = item.icon;
@@ -597,7 +622,7 @@ export default function HeaderNav() {
                                                                         </div>
                                                                         <div className="min-w-0">
                                                                             <div className="text-xs font-bold text-[#0B1F33]">{item.title}</div>
-                                                                            <div className="text-[10px] leading-4 text-slate-500 mt-0.5">{item.desc}</div>
+                                                                            <div className="text-[12px] leading-4 text-slate-500 mt-0.5">{item.desc}</div>
                                                                         </div>
                                                                     </Link>
                                                                 );
@@ -664,7 +689,7 @@ export default function HeaderNav() {
                                         <Link
                                             href={route('contact')}
                                             onClick={closeMenus}
-                                            className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-[#0B4F71] text-white text-xs font-extrabold"
+                                            className="flex items-center justify-center gap-2 w-full py-4 rounded-xl bg-[#0B4F71] text-white text-sm font-extrabold"
                                         >
                                             <Mail className="w-4 h-4" />
                                             {t.nav.contactBtn}

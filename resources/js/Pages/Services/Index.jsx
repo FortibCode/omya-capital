@@ -34,8 +34,6 @@ export default function Index({ services = [] }) {
             <Head title={t.nav.services} />
 
             <PageHero
-                eyebrow={t.services.heroEyebrow}
-                icon={Briefcase}
                 title={t.services.heroTitle}
                 description={t.services.heroDescription}
             />
@@ -78,7 +76,7 @@ export default function Index({ services = [] }) {
 
                                                 <Link
                                                     href={route('contact')}
-                                                    className="group/btn relative inline-flex items-center gap-2 bg-gradient-to-r from-[#0B2A45] to-[#0B4F71] hover:from-[#0B1F33] hover:to-[#0B2A45] text-white font-extrabold text-xs py-2.5 px-5 rounded-xl shadow-md shadow-[#0B4F71]/25 transition-all duration-300"
+                                                    className="group/btn relative inline-flex items-center gap-2 bg-gradient-to-r from-[#0B2A45] to-[#0B4F71] hover:from-[#0B1F33] hover:to-[#0B2A45] text-white font-extrabold text-sm py-3 px-6 rounded-xl shadow-md shadow-[#0B4F71]/25 transition-all duration-300"
                                                 >
                                                     <span>{t.services.solicitBtn}</span>
                                                     <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
@@ -103,7 +101,7 @@ export default function Index({ services = [] }) {
                         backgroundSize: '26px 26px',
                     }}
                 />
-                <div className="absolute -left-24 top-0 w-[400px] h-[400px] rounded-full bg-[#0B4F71]/25 blur-3xl pointer-events-none" />
+                <div className="absolute -left-24 top-0 w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(11,79,113,0.25) 0%, transparent 70%)' }} />
                 <RevealOnScroll className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-white text-center relative z-10">
                     <h2 className="text-2xl sm:text-3xl font-black mb-5">{t.services.ctaTitle}</h2>
                     <p className="text-white/70 text-sm leading-relaxed max-w-xl mx-auto mb-9">

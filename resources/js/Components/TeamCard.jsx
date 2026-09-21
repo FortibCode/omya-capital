@@ -39,19 +39,13 @@ export default function TeamCard({ member, className = '' }) {
                 ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center gap-2 text-white/30">
                         <User className="w-12 h-12 stroke-[1.5]" />
-                        <span className="text-[10px] font-bold uppercase tracking-widest">Photo indisponible</span>
+                        <span className="text-[12px] font-bold uppercase tracking-widest">Photo indisponible</span>
                     </div>
                 )}
 
                 {/* Subtle gradient overlay at bottom of photo */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0B1F33] via-[#0B1F33]/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
 
-                {/* Top Badge */}
-                <div className="absolute top-3.5 left-3.5 z-10">
-                    <span className="inline-block px-3 py-1 rounded-full bg-[#0B1F33]/80 backdrop-blur-md border border-white/20 text-white text-[10px] font-extrabold uppercase tracking-wider shadow-sm">
-                        OMYA CAPITAL
-                    </span>
-                </div>
             </div>
 
             {/* Content Details Box */}
@@ -67,7 +61,7 @@ export default function TeamCard({ member, className = '' }) {
 
                 {/* Bottom accent line */}
                 <div className="mt-4 pt-3 border-t border-[#0B4F71]/10 flex items-center justify-between">
-                    <span className="text-[10px] font-semibold text-[#0B2A45]/50 uppercase tracking-widest">
+                    <span className="text-[12px] font-semibold text-[#0B2A45]/50 uppercase tracking-widest">
                         Membre de Direction
                     </span>
                     <span className="w-7 h-7 rounded-full bg-[#F0F6FA] group-hover:bg-[#0B4F71] text-[#0B4F71] group-hover:text-white flex items-center justify-center transition-colors duration-300">

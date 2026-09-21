@@ -13,7 +13,7 @@ export default function Index({ documents = [] }) {
         <>
             <Head title={t.documents.heroTitle} />
 
-            <PageHero eyebrow={t.documents.heroEyebrow} icon={FileText} title={t.documents.heroTitle} />
+            <PageHero title={t.documents.heroTitle} />
 
             <section className="bg-white py-16 lg:py-24">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -39,7 +39,7 @@ export default function Index({ documents = [] }) {
                                                 >
                                                     <td className="px-6 py-4 font-bold text-[#0B1F33]">{doc.name}</td>
                                                     <td className="px-6 py-4">
-                                                        <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#0B4F71]/10 text-[#0B4F71] border border-[#0B4F71]/15 uppercase">
+                                                        <span className="text-[12px] font-bold px-2.5 py-1 rounded-full bg-[#0B4F71]/10 text-[#0B4F71] border border-[#0B4F71]/15 uppercase">
                                                             {doc.type}
                                                         </span>
                                                     </td>
@@ -64,7 +64,7 @@ export default function Index({ documents = [] }) {
                                                                 </a>
                                                                 <a
                                                                     href={route('documents.download', doc.id)}
-                                                                    className="inline-flex items-center gap-1.5 text-xs font-bold bg-gradient-to-r from-[#0B2A45] to-[#0B4F71] text-white py-1.5 px-3 rounded-lg hover:opacity-90 transition-opacity duration-300"
+                                                                    className="inline-flex items-center gap-1.5 text-xs font-bold bg-gradient-to-r from-[#0B2A45] to-[#0B4F71] text-white py-2.5 px-4 rounded-lg hover:opacity-90 transition-opacity duration-300"
                                                                 >
                                                                     <Download className="w-3.5 h-3.5" />
                                                                     {t.documents.download}

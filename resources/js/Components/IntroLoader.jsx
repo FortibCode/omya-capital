@@ -31,7 +31,7 @@ export default function IntroLoader({ duration = 5000 }) {
                     />
 
                     {/* Contenu central */}
-                    <div className="relative flex flex-col items-center gap-6">
+                    <div className="relative flex flex-col items-center gap-6 px-6 max-w-full">
 
                         {/* Vrai logo OMYA CAPITAL, révélé par un balayage gauche → droite */}
                         <motion.div
@@ -61,7 +61,7 @@ export default function IntroLoader({ duration = 5000 }) {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.7, delay: 1.6, ease: 'easeOut' }}
-                            className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-400"
+                            className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400 text-center text-balance"
                             style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
                         >
                             Redéfinir l&rsquo;investissement en Afrique Centrale

@@ -32,7 +32,7 @@ export default function Index({ activeType = 'actualite', posts = [] }) {
         <>
             <Head title={label} />
 
-            <PageHero eyebrow={t.news.heroEyebrow} icon={Icon} title={label} />
+            <PageHero title={label} />
 
             {/* Tab switcher — fond blanc */}
             <div className="bg-white border-b border-[#0B4F71]/10 py-4">
@@ -45,7 +45,7 @@ export default function Index({ activeType = 'actualite', posts = [] }) {
                                 <Link
                                     key={key}
                                     href={route(m.route)}
-                                    className={`flex items-center gap-2 text-xs font-bold px-5 py-2.5 rounded-xl border transition-all duration-300 ${
+                                    className={`flex items-center gap-2 text-sm font-bold px-5 py-3 rounded-xl border transition-all duration-300 ${
                                         isActive
                                             ? 'bg-gradient-to-r from-[#0B2A45] to-[#0B4F71] text-white border-transparent shadow-md shadow-[#0B4F71]/25'
                                             : 'bg-white text-[#0B2A45]/60 border-[#0B4F71]/15 hover:border-[#0B4F71]/40 hover:text-[#0B4F71]'

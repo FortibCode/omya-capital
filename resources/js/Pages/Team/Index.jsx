@@ -22,8 +22,6 @@ export default function Index({ members = [] }) {
             <Head title={t.nav.team} />
 
             <PageHero
-                eyebrow={t.team.heroEyebrow}
-                icon={Users}
                 title={t.team.heroTitle}
                 description={t.team.heroDescription}
             />
