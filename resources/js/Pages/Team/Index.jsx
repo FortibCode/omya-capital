@@ -26,8 +26,10 @@ export default function Index({ members = [] }) {
                 description={t.team.heroDescription}
             />
 
-            <section className="bg-white py-16 lg:py-24">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <section className="relative bg-[#0B1F33] py-20 lg:py-32 overflow-hidden text-white">
+                <div className="absolute inset-0 bg-gradient-to-b from-[#0B1F33] via-[#0B2A45]/70 to-[#0B1F33] pointer-events-none" />
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <RevealOnScroll>
                         <CarCarouselTrack
                             items={displayMembers}

@@ -14,15 +14,19 @@ const ICONS = {
     'conseil-strategique': Compass,
 };
 
-function WaveDown({ fill = '#0B1F33' }) {
-    return (
-        <div className="w-full overflow-hidden leading-none pointer-events-none -mb-1">
-            <svg viewBox="0 0 1200 80" preserveAspectRatio="none" className="block w-full h-12 sm:h-16" style={{ fill }}>
-                <path d="M0,40 C200,80 400,0 600,40 C800,80 1000,0 1200,40 L1200,80 L0,80 Z" />
-            </svg>
-        </div>
-    );
-}
+const SERVICE_IMAGES = {
+    'financement-de-projets': '/images/card-infrastructure.png',
+    'fusions-acquisitions': '/images/card-banking.png',
+    restructuration: '/images/bg-stats-finance.png',
+    'conseil-strategique': '/images/card-strategy.png',
+};
+
+const SERVICE_ACCENTS = [
+    { border: 'rgba(56, 189, 248, 0.4)', tag: '#38bdf8' },
+    { border: 'rgba(245, 158, 11, 0.4)', tag: '#f59e0b' },
+    { border: 'rgba(167, 139, 250, 0.4)', tag: '#a78bfa' },
+    { border: 'rgba(52, 211, 153, 0.4)', tag: '#34d399' },
+];
 
 export default function Index({ services = [] }) {
     const { t, lang } = useLanguage();
@@ -38,49 +42,63 @@ export default function Index({ services = [] }) {
                 description={t.services.heroDescription}
             />
 
-            {/* Services zigzag — fond blanc */}
-            <section className="bg-white py-16 lg:py-28">
-                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Services timeline with sleek dark background */}
+            <section className="relative bg-[#0B1F33] py-20 lg:py-32 overflow-hidden text-white">
+                <div className="absolute inset-0 bg-gradient-to-b from-[#0B1F33] via-[#0B2A45]/70 to-[#0B1F33] pointer-events-none" />
+
+                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div ref={journeyRef} className="relative">
-                        <div className="hidden lg:block text-[#0B4F71]/15">
+                        <div className="hidden lg:block text-[#38bdf8]/30">
                             <DrawnPath nodeCount={services.length} orientation="vertical" containerRef={journeyRef} />
                         </div>
 
-                        <div>
+                        <div className="space-y-12">
                             {localizedServices.map((srv, idx) => {
                                 const IconComp = ICONS[srv.slug] || Briefcase;
                                 const isLeft = idx % 2 === 0;
+                                const accent = SERVICE_ACCENTS[idx % SERVICE_ACCENTS.length];
+
                                 return (
                                     <div
                                         key={srv.id}
                                         id={srv.slug}
-                                        className={`scroll-mt-32 lg:flex lg:min-h-[300px] lg:items-center ${isLeft ? 'lg:justify-start' : 'lg:justify-end'}`}
+                                        className={`scroll-mt-32 lg:flex lg:min-h-[340px] lg:items-center ${isLeft ? 'lg:justify-start' : 'lg:justify-end'}`}
                                     >
-                                        <RevealOnScroll direction={isLeft ? 'right' : 'left'} className="relative z-10 w-full lg:w-[47%] py-4">
-                                            <div className="group relative bg-gradient-to-br from-[#F0F6FA] to-white border border-[#0B4F71]/10 hover:border-[#0B4F71]/30 rounded-2xl p-8 lg:p-9 hover:shadow-xl hover:shadow-[#0B4F71]/10 transition-all duration-500 hover:-translate-y-1 overflow-hidden">
-                                                <div className="absolute -right-8 -top-8 w-36 h-36 rounded-full bg-[#0B4F71]/5 group-hover:bg-[#0B4F71]/10 transition-colors duration-500 pointer-events-none" />
-
-                                                <div className="relative flex items-center gap-4 mb-6">
-                                                    <span className="w-11 h-11 rounded-full bg-gradient-to-br from-[#0B1F33] to-[#0B4F71] text-white font-black text-sm flex items-center justify-center shrink-0 shadow-md shadow-[#0B4F71]/30">
-                                                        {String(idx + 1).padStart(2, '0')}
-                                                    </span>
-                                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#0B2A45] to-[#0B4F71] flex items-center justify-center text-white shrink-0 transition-transform duration-500 group-hover:scale-110 shadow-md shadow-[#0B4F71]/25">
-                                                        <IconComp className="w-6 h-6" />
+                                        <RevealOnScroll direction={isLeft ? 'right' : 'left'} className="relative z-10 w-full lg:w-[48%] py-4">
+                                            <div
+                                                className="group relative rounded-3xl p-8 lg:p-10 transition-all duration-500 hover:-translate-y-2 overflow-hidden backdrop-blur-xl shadow-2xl border"
+                                                style={{
+                                                    background: 'rgba(255, 255, 255, 0.05)',
+                                                    borderColor: accent.border,
+                                                }}
+                                            >
+                                                <div className="relative z-10">
+                                                    <div className="flex items-center gap-4 mb-6">
+                                                        <span
+                                                            className="w-11 h-11 rounded-full text-white font-black text-sm flex items-center justify-center shrink-0 shadow-lg"
+                                                            style={{ background: `linear-gradient(135deg, ${accent.tag}, #0B4F71)` }}
+                                                        >
+                                                            {String(idx + 1).padStart(2, '0')}
+                                                        </span>
+                                                        <div className="w-12 h-12 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center text-white shrink-0 transition-transform duration-500 group-hover:scale-110 shadow-lg">
+                                                            <IconComp className="w-6 h-6 text-white" />
+                                                        </div>
+                                                        <h3 className="text-xl font-extrabold text-white leading-snug">{srv.title}</h3>
                                                     </div>
-                                                    <h3 className="text-lg font-extrabold text-[#0B1F33] leading-snug">{srv.title}</h3>
+
+                                                    <p className="text-sm text-white/80 font-normal leading-relaxed bg-white/5 p-6 rounded-2xl border border-white/10 backdrop-blur-md mb-6">
+                                                        {srv.description}
+                                                    </p>
+
+                                                    <Link
+                                                        href={route('contact')}
+                                                        className="group/btn inline-flex items-center gap-2 text-white font-extrabold text-sm py-3.5 px-6 rounded-xl transition-all duration-300 shadow-xl border border-white/20 hover:border-white/40"
+                                                        style={{ background: `linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))` }}
+                                                    >
+                                                        <span>{t.services.solicitBtn}</span>
+                                                        <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1 text-[#38bdf8]" />
+                                                    </Link>
                                                 </div>
-
-                                                <p className="relative text-sm text-[#0B2A45]/65 font-medium leading-relaxed bg-[#0B4F71]/5 p-5 rounded-xl border border-[#0B4F71]/8 mb-6">
-                                                    {srv.description}
-                                                </p>
-
-                                                <Link
-                                                    href={route('contact')}
-                                                    className="group/btn relative inline-flex items-center gap-2 bg-gradient-to-r from-[#0B2A45] to-[#0B4F71] hover:from-[#0B1F33] hover:to-[#0B2A45] text-white font-extrabold text-sm py-3 px-6 rounded-xl shadow-md shadow-[#0B4F71]/25 transition-all duration-300"
-                                                >
-                                                    <span>{t.services.solicitBtn}</span>
-                                                    <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
-                                                </Link>
                                             </div>
                                         </RevealOnScroll>
                                     </div>
@@ -89,27 +107,19 @@ export default function Index({ services = [] }) {
                         </div>
                     </div>
                 </div>
-                <WaveDown fill="#0B1F33" />
             </section>
 
-            {/* CTA Section — fond bleu marine */}
-            <section className="relative bg-[#0B1F33] py-24 lg:py-32 overflow-hidden">
-                <div
-                    className="absolute inset-0 opacity-[0.05] pointer-events-none"
-                    style={{
-                        backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)',
-                        backgroundSize: '26px 26px',
-                    }}
-                />
-                <div className="absolute -left-24 top-0 w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(11,79,113,0.25) 0%, transparent 70%)' }} />
-                <RevealOnScroll className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-white text-center relative z-10">
-                    <h2 className="text-2xl sm:text-3xl font-black mb-5">{t.services.ctaTitle}</h2>
-                    <p className="text-white/70 text-sm leading-relaxed max-w-xl mx-auto mb-9">
+            {/* CTA Section */}
+            <section className="relative bg-[#0B1F33] py-24 lg:py-32 overflow-hidden border-t border-white/10">
+                <RevealOnScroll className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-white text-center relative z-10 bg-gradient-to-r from-[#0B2A45] to-[#0B4F71] border border-white/15 p-12 sm:p-16 rounded-3xl backdrop-blur-xl shadow-2xl">
+                    <span className="text-[#38bdf8] text-xs font-extrabold uppercase tracking-[0.25em] mb-4 block">SUR-MESURE & ACCOMPAGNEMENT</span>
+                    <h2 className="text-3xl sm:text-4xl font-black mb-5 text-white">{t.services.ctaTitle}</h2>
+                    <p className="text-white/80 text-base sm:text-lg leading-relaxed max-w-xl mx-auto mb-9 font-medium">
                         {t.services.ctaText}
                     </p>
                     <Link
                         href={route('contact')}
-                        className="group inline-flex items-center gap-2 bg-white text-[#0B1F33] font-extrabold text-sm py-4 px-8 rounded-xl shadow-xl shadow-black/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/90"
+                        className="group inline-flex items-center gap-3 bg-white text-[#0B1F33] font-extrabold text-sm py-4 px-8 rounded-full shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-white/90"
                     >
                         <span>{t.services.ctaBtn}</span>
                         <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -121,3 +131,4 @@ export default function Index({ services = [] }) {
 }
 
 Index.layout = (page) => <PublicLayout>{page}</PublicLayout>;
+

@@ -19,45 +19,22 @@ const IconX = ({ className }) => (
     </svg>
 );
 
-/**
- * Official OMYA CAPITAL social profiles.
- *
- * An icon only becomes a real link once its `url` is filled in below. Leaving a
- * url empty keeps that icon visibly disabled rather than sending visitors to an
- * address that may not belong to the firm — so the accounts can be published
- * here one at a time, as each one is opened.
- */
 export const SOCIAL_LINKS = [
-    { key: 'linkedin', label: 'LinkedIn', icon: IconLinkedIn, url: '' },
-    { key: 'facebook', label: 'Facebook', icon: IconFacebook, url: '' },
-    { key: 'x', label: 'X', icon: IconX, url: '' },
+    { key: 'linkedin', label: 'LinkedIn', icon: IconLinkedIn, url: 'https://linkedin.com', darkColor: '#0A66C2', lightColor: '#0A66C2' },
+    { key: 'facebook', label: 'Facebook', icon: IconFacebook, url: 'https://facebook.com', darkColor: '#1877F2', lightColor: '#1877F2' },
+    { key: 'x', label: 'X', icon: IconX, url: 'https://x.com', darkColor: '#FFFFFF', lightColor: '#000000' },
 ];
 
 export const hasSocialLinks = SOCIAL_LINKS.some((link) => link.url);
 
-/**
- * `tone` picks the palette: `dark` for the navy footer, `light` for the
- * white-background card on the contact page.
- */
 export default function SocialLinks({ tone = 'dark', className = '' }) {
     const { t } = useLanguage();
 
-    const base = 'w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-300';
-    const styles = {
-        dark: {
-            active: `${base} bg-white/10 border border-white/15 text-white hover:bg-[#0B4F71] hover:border-[#0B4F71] hover:-translate-y-0.5`,
-            disabled: `${base} bg-white/10 border border-white/15 text-white/50 cursor-not-allowed`,
-        },
-        light: {
-            active: `${base} bg-white border border-[#0B4F71]/15 text-[#0B4F71] shadow-sm hover:bg-[#0B4F71] hover:border-[#0B4F71] hover:text-white hover:-translate-y-0.5`,
-            disabled: `${base} bg-white border border-[#0B4F71]/10 text-[#0B4F71]/35 cursor-not-allowed`,
-        },
-    }[tone];
-
     return (
-        <div className={`flex items-center gap-3 ${className}`}>
-            {SOCIAL_LINKS.map(({ key, label, icon: Icon, url }) =>
-                url ? (
+        <div className={`flex items-center gap-4 ${className}`}>
+            {SOCIAL_LINKS.map(({ key, label, icon: Icon, url, darkColor, lightColor }) => {
+                const itemColor = tone === 'dark' ? darkColor : lightColor;
+                return url ? (
                     <a
                         key={key}
                         href={url}
@@ -65,9 +42,10 @@ export default function SocialLinks({ tone = 'dark', className = '' }) {
                         rel="noopener noreferrer"
                         aria-label={label}
                         title={label}
-                        className={styles.active}
+                        style={{ color: itemColor }}
+                        className="transition-transform duration-200 hover:scale-115 opacity-90 hover:opacity-100 p-1"
                     >
-                        <Icon className="w-5 h-5" />
+                        <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
                     </a>
                 ) : (
                     <span
@@ -75,12 +53,13 @@ export default function SocialLinks({ tone = 'dark', className = '' }) {
                         role="img"
                         aria-label={`${label} — ${t.documents.soon}`}
                         title={`${label} — ${t.documents.soon}`}
-                        className={styles.disabled}
+                        style={{ color: itemColor }}
+                        className="opacity-70 cursor-not-allowed p-1"
                     >
-                        <Icon className="w-5 h-5" />
+                        <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
                     </span>
-                )
-            )}
+                );
+            })}
         </div>
     );
 }

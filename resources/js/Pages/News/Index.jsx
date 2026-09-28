@@ -45,11 +45,10 @@ export default function Index({ activeType = 'actualite', posts = [] }) {
                                 <Link
                                     key={key}
                                     href={route(m.route)}
-                                    className={`flex items-center gap-2 text-sm font-bold px-5 py-3 rounded-xl border transition-all duration-300 ${
-                                        isActive
+                                    className={`flex items-center gap-2 text-sm font-bold px-5 py-3 rounded-xl border transition-all duration-300 ${isActive
                                             ? 'bg-gradient-to-r from-[#0B2A45] to-[#0B4F71] text-white border-transparent shadow-md shadow-[#0B4F71]/25'
                                             : 'bg-white text-[#0B2A45]/60 border-[#0B4F71]/15 hover:border-[#0B4F71]/40 hover:text-[#0B4F71]'
-                                    }`}
+                                        }`}
                                 >
                                     <TabIcon className="w-4 h-4" />
                                     {t.news.types[key]}
