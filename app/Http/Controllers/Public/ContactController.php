@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Mail\ContactMessageReceived;
 use App\Models\ContactMessage;
+use App\Models\Service;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -15,7 +16,11 @@ class ContactController extends Controller
 {
     public function index(): Response
     {
-        return Inertia::render('Company/Contact');
+        // The first step of the form asks which service the enquiry concerns,
+        // so the page needs the same list the services page shows.
+        return Inertia::render('Company/Contact', [
+            'services' => Service::orderBy('sort_order')->get(),
+        ]);
     }
 
     public function store(Request $request): RedirectResponse

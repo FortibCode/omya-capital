@@ -1,11 +1,11 @@
 import React, { useRef, useEffect } from 'react';
 import { gsap } from '@/Utils/gsapSetup';
 import { MapPin } from 'lucide-react';
+import { COMPANY_ADDRESS_SHORT, COMPANY_MAP_EMBED } from '@/Constants/company';
 
 export default function LumoraLocation() {
     const sectionRef = useRef(null);
-    const addressQuery = "76 avenue Amilcar Cabral, Immeuble Villarecci, Brazzaville, Congo";
-    const mapEmbedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(addressQuery)}&t=&z=16&ie=UTF8&iwloc=B&output=embed`;
+    const mapEmbedUrl = COMPANY_MAP_EMBED;
 
     useEffect(() => {
         const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -71,7 +71,7 @@ export default function LumoraLocation() {
             >
                 <MapPin className="w-4 h-4 text-[#0B4F71]" />
                 <span className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#0B2A45]">
-                    76 Av. Amilcar Cabral — Immeuble Villarecci, Brazzaville
+                    {COMPANY_ADDRESS_SHORT}
                 </span>
                 <div className="h-px bg-black/10 flex-1" />
             </div>

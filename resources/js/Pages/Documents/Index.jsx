@@ -1,100 +1,137 @@
 import React from 'react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import { Head } from '@inertiajs/react';
-import PageHero from '@/Components/PageHero';
-import RevealOnScroll from '@/Components/RevealOnScroll';
+import RevealOnScroll, { staggerDelay } from '@/Components/RevealOnScroll';
 import { useLanguage } from '@/Context/LanguageContext';
-import { FileText, Eye, Download, Calendar } from 'lucide-react';
+import { Eye, Download } from 'lucide-react';
+
+/** Dates follow the language the visitor is reading in. */
+const LOCALES = { fr: 'fr-FR', en: 'en-GB', pt: 'pt-PT' };
 
 export default function Index({ documents = [] }) {
-    const { t } = useLanguage();
+    const { t, lang } = useLanguage();
+
+    const formatDate = (value) => {
+        if (!value) return null;
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return null;
+        return date.toLocaleDateString(LOCALES[lang] || LOCALES.fr, {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        });
+    };
 
     return (
         <>
             <Head title={t.documents.heroTitle} />
 
-            <PageHero
-                title={t.documents.heroTitle}
-            />
+            <div className="relative text-white">
+                {/* Fixed rather than tiled: the page is taller than one screen,
+                    so a `cover` background on the element itself would blow the
+                    artwork up several times its size. */}
+                <div
+                    aria-hidden="true"
+                    className="fixed inset-0 z-0 bg-cover bg-center pointer-events-none"
+                    style={{ backgroundImage: "url('/images/bg-about-omya.jpeg')" }}
+                />
+                {/* The artwork carries the OMYA CAPITAL mark across its middle
+                    in near-white, and white type landed straight on it. */}
+                <div aria-hidden="true" className="fixed inset-0 z-0 bg-[#0A0A0C]/75 pointer-events-none" />
 
-            <section className="relative bg-[#0B1F33] py-20 lg:py-32 overflow-hidden text-white">
-                <div className="absolute inset-0 bg-gradient-to-b from-[#0B1F33] via-[#0B2A45]/70 to-[#0B1F33] pointer-events-none" />
+                {/* The header is fixed and there is no hero to sit under it, so
+                    the title clears it by hand: the bar ends at 114px on phones
+                    and 104px from sm up. */}
+                <div className="relative z-10 max-w-[1150px] mx-auto px-5 sm:px-8 pt-[150px] lg:pt-[176px] pb-20 lg:pb-28">
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <RevealOnScroll direction="down" delay={0.1} duration={0.9} className="mb-12 lg:mb-16 text-center">
+                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white">
+                            {t.documents.heroTitle}
+                        </h1>
+                    </RevealOnScroll>
+
+                    {/* One opaque row per document rather than a table: a table
+                        has to scroll sideways on a phone, and these are five
+                        fields that read perfectly well stacked. The artwork
+                        behind is busy, so each row carries its own panel. */}
                     {documents.length > 0 ? (
-                        <RevealOnScroll>
-                            <div className="bg-white/5 border border-white/15 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl">
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-sm">
-                                        <thead>
-                                            <tr className="bg-white/10 text-left border-b border-white/15">
-                                                <th className="px-6 py-5 text-xs font-bold uppercase tracking-wider text-[#38bdf8]">{t.documents.tableHeaders.document}</th>
-                                                <th className="px-6 py-5 text-xs font-bold uppercase tracking-wider text-[#38bdf8]">{t.documents.tableHeaders.type}</th>
-                                                <th className="px-6 py-5 text-xs font-bold uppercase tracking-wider text-[#38bdf8]">{t.documents.tableHeaders.date}</th>
-                                                <th className="px-6 py-5 text-xs font-bold uppercase tracking-wider text-[#38bdf8]">{t.documents.tableHeaders.description}</th>
-                                                <th className="px-6 py-5 text-right text-xs font-bold uppercase tracking-wider text-[#38bdf8]">{t.documents.tableHeaders.actions}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-white/10">
-                                            {documents.map((doc) => (
-                                                <tr
-                                                    key={doc.id}
-                                                    className="transition-colors duration-300 hover:bg-white/10"
-                                                >
-                                                    <td className="px-6 py-5 font-bold text-white">{doc.name}</td>
-                                                    <td className="px-6 py-5">
-                                                        <span className="text-[12px] font-bold px-3 py-1 rounded-full bg-[#38bdf8]/15 text-[#38bdf8] border border-[#38bdf8]/30 uppercase tracking-wider">
+                        <div className="space-y-5">
+                            {documents.map((doc, idx) => {
+                                const date = formatDate(doc.published_at);
+                                return (
+                                    <RevealOnScroll
+                                        key={doc.id}
+                                        direction="up"
+                                        delay={staggerDelay(idx, 0.08)}
+                                        duration={0.9}
+                                        start="top 94%"
+                                    >
+                                        <article className="bg-[#0B1F33] shadow-2xl shadow-black/50 px-6 py-7 sm:px-9 sm:py-8 grid gap-5 md:grid-cols-12 md:items-center">
+                                            <div className="md:col-span-7">
+                                                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-white/55">
+                                                    {doc.type && (
+                                                        <span className="font-extrabold uppercase tracking-widest text-white/75">
                                                             {doc.type}
                                                         </span>
-                                                    </td>
-                                                    <td className="px-6 py-5 text-white/70">
-                                                        <span className="inline-flex items-center gap-1.5 font-medium">
-                                                            <Calendar className="w-4 h-4 text-[#38bdf8]" />
-                                                            {new Date(doc.published_at).toLocaleDateString('fr-FR')}
-                                                        </span>
-                                                    </td>
-                                                    <td className="px-6 py-5 text-white/70 max-w-xs font-medium">{doc.description}</td>
-                                                    <td className="px-6 py-5">
-                                                        {doc.file_path ? (
-                                                            <div className="flex items-center justify-end gap-3">
-                                                                <a
-                                                                    href={`/storage/${doc.file_path}`}
-                                                                    target="_blank"
-                                                                    rel="noreferrer"
-                                                                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[#38bdf8] hover:text-white transition-colors duration-300 uppercase tracking-wider"
-                                                                >
-                                                                    <Eye className="w-4 h-4" />
-                                                                    {t.documents.consult}
-                                                                </a>
-                                                                <a
-                                                                    href={route('documents.download', doc.id)}
-                                                                    className="inline-flex items-center gap-2 text-xs font-extrabold bg-white text-[#0B1F33] py-2.5 px-4 rounded-full hover:bg-white/90 transition-all duration-300 shadow-lg"
-                                                                >
-                                                                    <Download className="w-3.5 h-3.5" />
-                                                                    {t.documents.download}
-                                                                </a>
-                                                            </div>
-                                                        ) : (
-                                                            <span className="text-xs text-white/40 italic">{t.documents.soon}</span>
-                                                        )}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </RevealOnScroll>
+                                                    )}
+                                                    {date && <time dateTime={doc.published_at}>{date}</time>}
+                                                </div>
+
+                                                <h2 className="mt-3 text-lg sm:text-xl font-bold leading-snug text-white">
+                                                    {doc.name}
+                                                </h2>
+
+                                                {doc.description && (
+                                                    <p className="mt-2 text-sm sm:text-base text-white/75 leading-relaxed">
+                                                        {doc.description}
+                                                    </p>
+                                                )}
+                                            </div>
+
+                                            <div className="md:col-span-5 flex flex-wrap items-center gap-5 md:justify-end">
+                                                {doc.file_path ? (
+                                                    <>
+                                                        <a
+                                                            href={`/storage/${doc.file_path}`}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-white/85 hover:text-white transition-colors duration-300 focus-visible:outline-none focus-visible:underline"
+                                                        >
+                                                            <Eye className="w-4 h-4" />
+                                                            <span>{t.documents.consult}</span>
+                                                        </a>
+                                                        <a
+                                                            href={route('documents.download', doc.id)}
+                                                            style={{ '--pill-ink': '#0B1F33' }}
+                                                            className="pill-ghost group inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/60 bg-transparent text-white text-xs font-extrabold uppercase tracking-widest transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                                                        >
+                                                            <Download className="w-4 h-4 transition-transform duration-300 group-hover:translate-y-0.5" />
+                                                            <span>{t.documents.download}</span>
+                                                        </a>
+                                                    </>
+                                                ) : (
+                                                    // Recorded but not yet uploaded: say so rather
+                                                    // than offer a download that cannot happen.
+                                                    <span className="text-xs font-bold uppercase tracking-widest text-white/45">
+                                                        {t.documents.soon}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </article>
+                                    </RevealOnScroll>
+                                );
+                            })}
+                        </div>
                     ) : (
-                        <RevealOnScroll>
-                            <div className="relative overflow-hidden bg-white/5 border border-white/15 backdrop-blur-xl rounded-3xl p-16 text-center max-w-2xl mx-auto shadow-2xl">
-                                <FileText className="w-12 h-12 text-[#38bdf8]/50 mx-auto mb-4 relative z-10" />
-                                <p className="text-base text-white/70 relative z-10 font-medium">{t.documents.empty}</p>
-                            </div>
+                        <RevealOnScroll direction="up" delay={0.2} duration={0.9}>
+                            <p className="bg-[#0B1F33] shadow-2xl shadow-black/50 px-6 py-16 sm:py-20 text-center text-base sm:text-lg text-white/75">
+                                {t.documents.empty}
+                            </p>
                         </RevealOnScroll>
                     )}
+
                 </div>
-            </section>
+            </div>
         </>
     );
 }

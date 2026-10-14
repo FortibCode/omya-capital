@@ -29,6 +29,9 @@ export const TRANSLATIONS = {
             contact: 'Contact',
             contactBtn: 'Prendre contact',
             ourServices: 'Nos expertises',
+            menuLabel: 'Menu de navigation',
+            closeLabel: 'Fermer',
+            subsectionsLabel: 'afficher les sous-rubriques',
             aboutItems: [
                 { key: 'presentation', href: '/a-propos#presentation', title: 'Présentation' },
                 { key: 'mission', href: '/a-propos#mission', title: 'Mission' },
@@ -84,6 +87,7 @@ export const TRANSLATIONS = {
 
         about: {
             heroDescription: "Redéfinir l'investissement en Afrique Centrale.",
+            introLead: 'Chez OMYA CAPITAL, nous avons une mission claire :',
             presEyebrow: 'Qui sommes-nous',
             presTitle: 'Présentation',
             missionEyebrow: 'Notre raison d’être',
@@ -118,13 +122,16 @@ export const TRANSLATIONS = {
 
         team: {
             heroEyebrow: 'Notre Équipe',
-            heroTitle: "L'Équipe Dirigeante",
+            heroTitle: 'Ceux qui donnent vie à nos ambitions',
             heroDescription: 'Des professionnels engagés au service de la croissance de nos clients.',
         },
 
         partners: {
             heroEyebrow: 'Réseau Partenaire',
             heroTitle: 'Nos Partenaires',
+            ctaTitle: 'Travaillons ensemble',
+            ctaBtn: 'Prendre contact avec nos équipes',
+            visitLabel: 'voir le site (nouvelle fenêtre)',
         },
 
         contact: {
@@ -149,6 +156,10 @@ export const TRANSLATIONS = {
             messageLabel: 'Votre message *',
             messagePlaceholder: 'Décrivez votre projet...',
             sendBtn: 'Envoyer mon message',
+            nextBtn: 'Suivant',
+            backBtn: 'Retour',
+            step1Title: 'Votre demande concerne',
+            step2Title: 'Vos coordonnées',
             sendingBtn: 'Envoi en cours…',
             socialTitle: 'Réseaux Sociaux',
             socialText: 'Nos comptes officiels seront communiqués prochainement.',
@@ -214,6 +225,9 @@ export const TRANSLATIONS = {
             contact: 'Contact',
             contactBtn: 'Get in Touch',
             ourServices: 'Our Expertise',
+            menuLabel: 'Navigation menu',
+            closeLabel: 'Close',
+            subsectionsLabel: 'show subsections',
             aboutItems: [
                 { key: 'presentation', href: '/a-propos#presentation', title: 'Overview' },
                 { key: 'mission', href: '/a-propos#mission', title: 'Mission' },
@@ -269,6 +283,7 @@ export const TRANSLATIONS = {
 
         about: {
             heroDescription: 'Redefining Investment in Central Africa.',
+            introLead: 'At OMYA CAPITAL, we have a clear mission:',
             presEyebrow: 'Who we are',
             presTitle: 'Overview',
             missionEyebrow: 'Our purpose',
@@ -303,13 +318,16 @@ export const TRANSLATIONS = {
 
         team: {
             heroEyebrow: 'Our Team',
-            heroTitle: 'Executive Team',
+            heroTitle: 'The people who bring our ambitions to life',
             heroDescription: "Committed professionals serving our clients' growth.",
         },
 
         partners: {
             heroEyebrow: 'Partner Network',
             heroTitle: 'Our Partners',
+            ctaTitle: "Let's work together",
+            ctaBtn: 'Get in touch with our teams',
+            visitLabel: 'visit the website (opens in a new window)',
         },
 
         contact: {
@@ -334,6 +352,10 @@ export const TRANSLATIONS = {
             messageLabel: 'Your message *',
             messagePlaceholder: 'Describe your project...',
             sendBtn: 'Send my message',
+            nextBtn: 'Next',
+            backBtn: 'Back',
+            step1Title: 'Your enquiry concerns',
+            step2Title: 'Your details',
             sendingBtn: 'Sending…',
             socialTitle: 'Social Media',
             socialText: 'Our official accounts will be announced soon.',
@@ -399,6 +421,9 @@ export const TRANSLATIONS = {
             contact: 'Contacto',
             contactBtn: 'Entrar em Contacto',
             ourServices: 'A Nossa Especialização',
+            menuLabel: 'Menu de navegação',
+            closeLabel: 'Fechar',
+            subsectionsLabel: 'mostrar subsecções',
             aboutItems: [
                 { key: 'presentation', href: '/a-propos#presentation', title: 'Apresentação' },
                 { key: 'mission', href: '/a-propos#mission', title: 'Missão' },
@@ -454,6 +479,7 @@ export const TRANSLATIONS = {
 
         about: {
             heroDescription: 'Redefinindo o Investimento na África Central.',
+            introLead: 'Na OMYA CAPITAL, temos uma missão clara:',
             presEyebrow: 'Quem somos',
             presTitle: 'Apresentação',
             missionEyebrow: 'A nossa razão de ser',
@@ -488,13 +514,16 @@ export const TRANSLATIONS = {
 
         team: {
             heroEyebrow: 'A Nossa Equipa',
-            heroTitle: 'A Equipa Dirigente',
+            heroTitle: 'Aqueles que dão vida às nossas ambições',
             heroDescription: 'Profissionais empenhados ao serviço do crescimento dos nossos clientes.',
         },
 
         partners: {
             heroEyebrow: 'Rede de Parceiros',
             heroTitle: 'Os Nossos Parceiros',
+            ctaTitle: 'Vamos trabalhar juntos',
+            ctaBtn: 'Entre em contacto com as nossas equipas',
+            visitLabel: 'ver o site (abre numa nova janela)',
         },
 
         contact: {
@@ -519,6 +548,10 @@ export const TRANSLATIONS = {
             messageLabel: 'A sua mensagem *',
             messagePlaceholder: 'Descreva o seu projeto...',
             sendBtn: 'Enviar a minha mensagem',
+            nextBtn: 'Seguinte',
+            backBtn: 'Voltar',
+            step1Title: 'O seu pedido diz respeito a',
+            step2Title: 'Os seus dados',
             sendingBtn: 'A enviar…',
             socialTitle: 'Redes Sociais',
             socialText: 'As nossas contas oficiais serão comunicadas brevemente.',

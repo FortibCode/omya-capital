@@ -1,126 +1,152 @@
 import React from 'react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import { Head, Link } from '@inertiajs/react';
-import PageHero from '@/Components/PageHero';
 import RevealOnScroll, { staggerDelay } from '@/Components/RevealOnScroll';
 import { useLanguage } from '@/Context/LanguageContext';
-import { Newspaper, BookOpen, Megaphone, Calendar, Download } from 'lucide-react';
+import { Calendar, Download } from 'lucide-react';
 
-const TYPE_META = {
-    actualite: { icon: Newspaper, route: 'news.index' },
-    publication: { icon: BookOpen, route: 'news.publications' },
-    communique: { icon: Megaphone, route: 'news.communiques' },
-};
+/** The three sections, each a real route declared in web.php. */
+const TYPES = [
+    { key: 'actualite', route: 'news.index' },
+    { key: 'publication', route: 'news.publications' },
+    { key: 'communique', route: 'news.communiques' },
+];
 
-function WaveDown({ fill = '#0B1F33' }) {
-    return (
-        <div className="w-full overflow-hidden leading-none pointer-events-none -mb-1">
-            <svg viewBox="0 0 1200 80" preserveAspectRatio="none" className="block w-full h-12 sm:h-16" style={{ fill }}>
-                <path d="M0,40 C200,80 400,0 600,40 C800,80 1000,0 1200,40 L1200,80 L0,80 Z" />
-            </svg>
-        </div>
-    );
-}
+/** Dates follow the language the visitor is reading in. */
+const LOCALES = { fr: 'fr-FR', en: 'en-GB', pt: 'pt-PT' };
 
 export default function Index({ activeType = 'actualite', posts = [] }) {
-    const { t } = useLanguage();
-    const meta = TYPE_META[activeType] || TYPE_META.actualite;
+    const { t, lang } = useLanguage();
     const label = t.news.types[activeType] || t.news.types.actualite;
-    const Icon = meta.icon;
+
+    const formatDate = (value) => {
+        if (!value) return null;
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return null;
+        return date.toLocaleDateString(LOCALES[lang] || LOCALES.fr, {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        });
+    };
 
     return (
         <>
             <Head title={label} />
 
-            <PageHero title={label} />
+            <div className="relative text-white">
+                {/* Fixed rather than tiled: the page is taller than one screen,
+                    so a `cover` background on the element itself would blow the
+                    artwork up several times its size. */}
+                <div
+                    aria-hidden="true"
+                    className="fixed inset-0 z-0 bg-cover bg-center pointer-events-none"
+                    style={{ backgroundImage: "url('/images/bg-services-omya.jpeg')" }}
+                />
+                {/* The artwork carries the OMYA CAPITAL mark across its middle
+                    in near-white, and white type landed straight on it. */}
+                <div aria-hidden="true" className="fixed inset-0 z-0 bg-[#0A0A0C]/75 pointer-events-none" />
 
-            {/* Tab switcher — fond blanc */}
-            <div className="bg-white border-b border-[#0B4F71]/10 py-4">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <RevealOnScroll className="flex flex-wrap justify-center gap-2">
-                        {Object.entries(TYPE_META).map(([key, m]) => {
-                            const TabIcon = m.icon;
+                {/* The header is fixed and there is no hero to sit under it, so
+                    the title clears it by hand: the bar ends at 114px on phones
+                    and 104px from sm up. */}
+                <div className="relative z-10 max-w-[1150px] mx-auto px-5 sm:px-8 pt-[150px] lg:pt-[176px] pb-20 lg:pb-28">
+
+                    <RevealOnScroll direction="down" delay={0.1} duration={0.9} className="text-center">
+                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white">
+                            {label}
+                        </h1>
+                    </RevealOnScroll>
+
+                    {/* ── The three sections ── */}
+                    <RevealOnScroll
+                        direction="up"
+                        delay={0.2}
+                        duration={0.9}
+                        className="mt-10 lg:mt-12 flex flex-wrap justify-center gap-3"
+                    >
+                        {TYPES.map(({ key, route: routeName }) => {
                             const isActive = key === activeType;
                             return (
                                 <Link
                                     key={key}
-                                    href={route(m.route)}
-                                    className={`flex items-center gap-2 text-sm font-bold px-5 py-3 rounded-xl border transition-all duration-300 ${isActive
-                                            ? 'bg-gradient-to-r from-[#0B2A45] to-[#0B4F71] text-white border-transparent shadow-md shadow-[#0B4F71]/25'
-                                            : 'bg-white text-[#0B2A45]/60 border-[#0B4F71]/15 hover:border-[#0B4F71]/40 hover:text-[#0B4F71]'
-                                        }`}
+                                    href={route(routeName)}
+                                    aria-current={isActive ? 'page' : undefined}
+                                    style={isActive ? undefined : { '--pill-ink': '#0B1F33' }}
+                                    className={
+                                        isActive
+                                            ? 'inline-flex items-center px-7 py-3 rounded-full bg-white text-[#0B1F33] text-xs font-extrabold uppercase tracking-widest'
+                                            : 'pill-ghost inline-flex items-center px-7 py-3 rounded-full border border-white/50 bg-transparent text-white/85 text-xs font-extrabold uppercase tracking-widest transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white'
+                                    }
                                 >
-                                    <TabIcon className="w-4 h-4" />
                                     {t.news.types[key]}
                                 </Link>
                             );
                         })}
                     </RevealOnScroll>
+
+                    {/* ── What is published, if anything is ── */}
+                    {/* Every card sits on its own opaque panel: the artwork
+                        behind is busy, and body copy laid straight on it would
+                        not hold up. */}
+                    <div className="mt-12 lg:mt-16">
+                        {posts.length > 0 ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+                                {posts.map((post, idx) => {
+                                    const date = formatDate(post.published_at);
+                                    return (
+                                        <RevealOnScroll
+                                            key={post.id}
+                                            direction="up"
+                                            delay={staggerDelay(idx, 0.1)}
+                                            duration={0.9}
+                                            start="top 94%"
+                                        >
+                                            <article className="h-full flex flex-col bg-[#0B1F33] shadow-2xl shadow-black/50 px-7 py-8">
+                                                {date && (
+                                                    <div className="flex items-center gap-2 text-xs text-white/55">
+                                                        <Calendar className="w-3.5 h-3.5 shrink-0" />
+                                                        <time dateTime={post.published_at}>{date}</time>
+                                                    </div>
+                                                )}
+
+                                                <h2 className="mt-4 text-lg sm:text-xl font-bold leading-snug text-white">
+                                                    {post.title}
+                                                </h2>
+
+                                                {post.excerpt && (
+                                                    <p className="mt-3 text-sm sm:text-base text-white/80 leading-relaxed flex-1">
+                                                        {post.excerpt}
+                                                    </p>
+                                                )}
+
+                                                {post.attachment_path && (
+                                                    <a
+                                                        href={`/storage/${post.attachment_path}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="group mt-6 inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-white hover:text-white/70 transition-colors duration-300 focus-visible:outline-none focus-visible:underline"
+                                                    >
+                                                        <Download className="w-4 h-4 transition-transform duration-300 group-hover:translate-y-0.5" />
+                                                        <span>{t.news.download}</span>
+                                                    </a>
+                                                )}
+                                            </article>
+                                        </RevealOnScroll>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            <RevealOnScroll direction="up" delay={0.3} duration={0.9}>
+                                <p className="bg-[#0B1F33] shadow-2xl shadow-black/50 px-6 py-16 sm:py-20 text-center text-base sm:text-lg text-white/75">
+                                    {t.news.empty}
+                                </p>
+                            </RevealOnScroll>
+                        )}
+                    </div>
+
                 </div>
             </div>
-
-            {/* Content — fond blanc */}
-            <section className="bg-white py-16 lg:py-24">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    {posts.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {posts.map((post, idx) => (
-                                <RevealOnScroll key={post.id} delay={staggerDelay(idx, 0.1)}>
-                                    <div className="group bg-gradient-to-br from-[#F0F6FA] to-white border border-[#0B4F71]/10 hover:border-[#0B4F71]/30 rounded-2xl p-7 hover:shadow-xl hover:shadow-[#0B4F71]/10 transition-all duration-500 h-full flex flex-col hover:-translate-y-1 overflow-hidden relative">
-                                        <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-[#0B4F71]/5 group-hover:bg-[#0B4F71]/10 transition-colors duration-500 pointer-events-none" />
-                                        <div className="flex items-center gap-2 text-xs text-[#0B2A45]/45 mb-4">
-                                            <Calendar className="w-3.5 h-3.5" />
-                                            <span>
-                                                {new Date(post.published_at).toLocaleDateString('fr-FR', {
-                                                    year: 'numeric',
-                                                    month: 'long',
-                                                    day: 'numeric',
-                                                })}
-                                            </span>
-                                        </div>
-                                        <h3 className="text-base font-extrabold text-[#0B1F33] mb-3 leading-snug group-hover:text-[#0B4F71] transition-colors duration-300">
-                                            {post.title}
-                                        </h3>
-                                        <p className="text-xs text-[#0B2A45]/55 leading-relaxed mb-5 flex-1">{post.excerpt}</p>
-                                        {post.attachment_path && (
-                                            <a
-                                                href={`/storage/${post.attachment_path}`}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0B4F71] hover:text-[#0B1F33] mt-auto transition-colors duration-300"
-                                            >
-                                                <Download className="w-3.5 h-3.5" />
-                                                <span>{t.news.download}</span>
-                                            </a>
-                                        )}
-                                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#0B2A45] to-[#0B4F71] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
-                                    </div>
-                                </RevealOnScroll>
-                            ))}
-                        </div>
-                    ) : (
-                        <RevealOnScroll>
-                            <div className="relative overflow-hidden bg-gradient-to-br from-[#0B1F33] to-[#0B4F71] rounded-2xl p-16 text-center max-w-2xl mx-auto shadow-xl shadow-[#0B1F33]/20">
-                                <div
-                                    className="absolute inset-0 opacity-[0.04] pointer-events-none"
-                                    style={{
-                                        backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.9) 1px, transparent 1px)',
-                                        backgroundSize: '24px 24px',
-                                    }}
-                                />
-                                <Icon className="w-10 h-10 text-white/30 mx-auto mb-4 relative z-10" />
-                                <p className="text-sm text-white/60 relative z-10">{t.news.empty}</p>
-                            </div>
-                        </RevealOnScroll>
-                    )}
-                </div>
-                <div className="mt-16">
-                    <WaveDown fill="#0B1F33" />
-                </div>
-            </section>
-
-            {/* Footer accent bleu */}
-            <div className="h-24 lg:h-32 bg-[#0B1F33]" />
         </>
     );
 }

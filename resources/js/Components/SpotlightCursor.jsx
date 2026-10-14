@@ -3,12 +3,20 @@ import { motion, useSpring, useMotionValue } from 'framer-motion';
 
 /**
  * SpotlightCursor
- * Luxury Spotlight Cursor Effect:
- * - Smooth spring-physic tracking of mouse coordinates.
- * - Dual-layer spotlight beam (ambient light circle + focus core dot).
- * - Dynamic scale & flare state on interactive elements (buttons, links).
- * - Non-intrusive overlay with pointer-events-none.
+ *
+ * Three colours, each doing a job rather than decorating:
+ *   — BLUE  the ambient halo and the core dot, the brand accent
+ *   — WHITE the ring, which is what the eye actually follows
+ *   — BLACK a one-pixel edge on either side of that ring
+ *
+ * The black matters more than it looks: the site runs white type on dark
+ * artwork in most places, but the partner plates and the logo panels are
+ * near-white. A plain white ring disappears on those. Outlined in black it
+ * stays visible on anything.
  */
+const BLUE = '56, 189, 248';
+const WHITE = '255, 255, 255';
+const BLACK = '0, 0, 0';
 export default function SpotlightCursor() {
     const [visible, setVisible] = useState(true);
     const [isHovered, setIsHovered] = useState(false);
@@ -79,15 +87,15 @@ export default function SpotlightCursor() {
                     width: isHovered ? 650 : 520,
                     height: isHovered ? 650 : 520,
                     background: isHovered
-                        ? 'radial-gradient(circle, rgba(56, 189, 248, 0.22) 0%, rgba(19, 46, 67, 0.14) 40%, transparent 70%)'
-                        : 'radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, rgba(19, 46, 67, 0.08) 45%, transparent 70%)',
+                        ? `radial-gradient(circle, rgba(${BLUE}, 0.22) 0%, rgba(${BLACK}, 0.14) 40%, transparent 70%)`
+                        : `radial-gradient(circle, rgba(${BLUE}, 0.15) 0%, rgba(${BLACK}, 0.08) 45%, transparent 70%)`,
                     transition: 'width 0.3s ease, height 0.3s ease, background 0.3s ease',
                 }}
             />
 
             {/* Precision Spotlight Ring & Core Cursor Pointer */}
             <motion.div
-                className="absolute rounded-full pointer-events-none border border-sky-400/50"
+                className="absolute rounded-full pointer-events-none border"
                 style={{
                     x: spotlightX,
                     y: spotlightY,
@@ -95,15 +103,24 @@ export default function SpotlightCursor() {
                     translateY: '-50%',
                     width: isClicked ? 24 : isHovered ? 54 : 34,
                     height: isClicked ? 24 : isHovered ? 54 : 34,
-                    backgroundColor: isHovered ? 'rgba(56, 189, 248, 0.18)' : 'rgba(19, 46, 67, 0.12)',
+                    borderColor: `rgba(${WHITE}, ${isHovered ? 0.95 : 0.8})`,
+                    backgroundColor: isHovered ? `rgba(${BLUE}, 0.18)` : `rgba(${BLACK}, 0.12)`,
+                    // Two hairlines of black, outside and inside the white ring,
+                    // then the blue glow.
                     boxShadow: isHovered
-                        ? '0 0 25px rgba(56, 189, 248, 0.65), inset 0 0 15px rgba(56, 189, 248, 0.4)'
-                        : '0 0 15px rgba(56, 189, 248, 0.35)',
-                    transition: 'width 0.2s ease, height 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease',
+                        ? `0 0 0 1px rgba(${BLACK}, 0.5), inset 0 0 0 1px rgba(${BLACK}, 0.35), 0 0 25px rgba(${BLUE}, 0.6)`
+                        : `0 0 0 1px rgba(${BLACK}, 0.45), inset 0 0 0 1px rgba(${BLACK}, 0.3), 0 0 15px rgba(${BLUE}, 0.35)`,
+                    transition: 'width 0.2s ease, height 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease',
                 }}
             >
                 {/* Center precision micro dot */}
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-sky-300 shadow-[0_0_8px_#38bdf8]" />
+                <div
+                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full"
+                    style={{
+                        backgroundColor: `rgb(${BLUE})`,
+                        boxShadow: `0 0 0 1px rgba(${BLACK}, 0.55), 0 0 8px rgba(${BLUE}, 0.9)`,
+                    }}
+                />
             </motion.div>
         </div>
     );

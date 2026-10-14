@@ -12,7 +12,7 @@ import { useEffect, useRef } from 'react';
  *   decay       — how fast each stamp fades per frame (0–1), default 0.018
  */
 export default function LiquidCursor({
-    color = '#0B4F71',
+    color = '#011F31',
     brushRadius = 90,
     opacity = 0.18,
     decay = 0.018,

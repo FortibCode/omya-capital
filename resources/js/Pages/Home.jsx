@@ -2,36 +2,36 @@ import React from 'react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import { Head } from '@inertiajs/react';
 import BaselineHero from '@/Components/BaselineHero';
+import StackSection from '@/Components/StackSection';
 import LumoraAbout from '@/Components/LumoraAbout';
 import LumoraServices from '@/Components/LumoraServices';
 import { useLanguage } from '@/Context/LanguageContext';
 
-export default function Home({ onOpenModal, onMenuOpen }) {
+export default function Home({ services = [], onOpenModal, onMenuOpen }) {
     const { t } = useLanguage();
 
     return (
         <>
             <Head title={t.nav.home} />
 
-            <div className="bg-white text-slate-900 antialiased">
+            {/* Stacked scroll: each panel sticks and the next climbs over it.
+                No overflow/transform on this wrapper — either would break the
+                sticky positioning the panels rely on. */}
+            <div className="bg-[#0B1F33] text-white antialiased">
                 {/* ── 01. BASELINE HERO ── */}
-                <BaselineHero onMenuOpen={onMenuOpen} onOpenModal={onOpenModal} />
-
-                {/* ── SEPARATION INTER-SECTION GRISE ── */}
-                <div className="w-full bg-[#f1f5f9] py-12 sm:py-16 border-y border-slate-300/30 flex items-center justify-center relative z-10 shadow-inner">
-                    <div className="max-w-7xl mx-auto px-6 text-center">
-                        <div className="w-16 h-1 bg-[#0B1F33] mx-auto rounded-full opacity-30" />
-                    </div>
-                </div>
+                <StackSection zIndex={1}>
+                    <BaselineHero onMenuOpen={onMenuOpen} onOpenModal={onOpenModal} />
+                </StackSection>
 
                 {/* ── 02. SECTION À PROPOS ── */}
-                <LumoraAbout onOpenModal={onOpenModal} />
+                <StackSection zIndex={2}>
+                    <LumoraAbout onOpenModal={onOpenModal} />
+                </StackSection>
 
-                {/* ── SEPARATION INTER-SECTION BLANCHE ── */}
-                <div className="w-full bg-white py-12 sm:py-16 relative z-10" />
-
-                {/* ── 03. SECTION SERVICES ── */}
-                <LumoraServices onOpenModal={onOpenModal} />
+                {/* ── 03. SECTION SERVICES — last panel, nothing covers it ── */}
+                <StackSection zIndex={3} depth={false}>
+                    <LumoraServices services={services} />
+                </StackSection>
             </div>
         </>
     );

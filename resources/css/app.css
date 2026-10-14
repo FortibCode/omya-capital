@@ -20,7 +20,11 @@
     background-color: #0B1F33;
     color: #FFFFFF;
     font-family: 'Figtree', system-ui, -apple-system, sans-serif;
-    overflow-x: hidden;
+    /* `clip` rather than `hidden`: `overflow-x: hidden` turns the body into a
+       scroll container, which silently breaks `position: sticky` for every
+       descendant — including the stacked home-page panels. `clip` crops the
+       same way without creating that scroll container. */
+    overflow-x: clip;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -72,4 +76,18 @@
 .link-underline:focus-visible::after {
   transform: scaleX(1);
   transform-origin: left;
+}
+
+/* Ghost pill on the À Propos carousel: transparent until hovered, then filled
+   white with the ink of whichever panel it is sitting on. The colour changes
+   per slide, so it arrives as a custom property rather than a utility class. */
+.pill-ghost:hover,
+.pill-ghost:focus-visible {
+  background-color: #ffffff;
+  border-color: #ffffff;
+  color: var(--pill-ink, #0B4F71);
+}
+
+.pill-ghost:active {
+  background-color: rgba(255, 255, 255, 0.9);
 }

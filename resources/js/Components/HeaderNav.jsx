@@ -127,16 +127,22 @@ export default function HeaderNav({ onMenuOpen }) {
                 }`}
             >
                 <div className="max-w-[1700px] mx-auto px-6 sm:px-12 relative flex items-center justify-between">
-                    {/* ── LEFT: Official Social Media Colors ── */}
-                    <div className="flex items-center">
+                    {/* ── LEFT: Official Social Media Colors ──
+                        Hidden on phones: the logo is centred absolutely, so below ~640px
+                        these icons run underneath it. They stay reachable in the menu
+                        panel and the footer. */}
+                    <div className="hidden sm:flex items-center">
                         <SocialLinks tone="dark" />
                     </div>
 
-                    {/* ── CENTER: Logo OMYA CAPITAL ── */}
-                    <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center">
+                    {/* ── CENTER: Logo OMYA CAPITAL ──
+                        The white variant: this header sits over the dark hero video and
+                        keeps a navy background once scrolled, so the navy logo was
+                        invisible in both states. */}
+                    <div className="static sm:absolute sm:left-1/2 sm:-translate-x-1/2 flex items-center justify-center">
                         <Link href={route('home')} className="flex items-center group py-1">
                             <OmyaLogo
-                                variant="dark"
+                                variant="light"
                                 height={58}
                                 className={`w-auto object-contain transition-all duration-300 group-hover:scale-105 ${
                                     scrolled ? 'h-10 sm:h-12' : 'h-12 sm:h-16 lg:h-18'
@@ -145,8 +151,11 @@ export default function HeaderNav({ onMenuOpen }) {
                         </Link>
                     </div>
 
-                    {/* ── RIGHT: Humanized Language Selector + Hamburger Menu Button ── */}
-                    <div className="flex items-center gap-4 sm:gap-6">
+                    {/* ── RIGHT: Humanized Language Selector + Hamburger Menu Button ──
+                        ml-auto keeps this block on the right even on phones, where the
+                        social icons on the left are hidden and justify-between alone
+                        would pull it back to the start. */}
+                    <div className="flex items-center gap-4 sm:gap-6 ml-auto">
                         {/* Language Switcher */}
                         <LanguageSelector />
 
