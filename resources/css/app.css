@@ -91,3 +91,18 @@
 .pill-ghost:active {
   background-color: rgba(255, 255, 255, 0.9);
 }
+
+/* Running text one step up from regular.
+ *
+ * The site is white type on dark backgrounds almost throughout, and white on
+ * dark optically thins a typeface — the same weight that looks right on paper
+ * looks frail here. 500 restores the intended colour of the text without
+ * turning paragraphs into headings.
+ *
+ * An explicit weight class still wins: a utility beats a bare element
+ * selector, so headings, labels and buttons keep what they are given.
+ */
+p,
+li {
+    font-weight: 500;
+}

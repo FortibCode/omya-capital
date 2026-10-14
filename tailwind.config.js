@@ -13,8 +13,7 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Poppins', ...defaultTheme.fontFamily.sans],
-                poppins: ['Poppins', ...defaultTheme.fontFamily.sans],
+                sans: ['Inter', ...defaultTheme.fontFamily.sans],
             },
 
             // Échelle typographique remontée : le bas de l'échelle (xs/sm) servait de

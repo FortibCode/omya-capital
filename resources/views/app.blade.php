@@ -16,15 +16,19 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
         <!-- Lenis smooth-scroll base styles -->
         <link rel="stylesheet" href="https://unpkg.com/lenis@1.3.23/dist/lenis.css">
         <style>
             :root {
-                --font-poppins: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+                --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             }
             body {
-                font-family: var(--font-poppins);
+                font-family: var(--font-sans);
+                /* Inter ships these off by default: contextual alternates and
+                   the slashed zero, which stops 0 and O being confused in a
+                   phone number or an amount. */
+                font-feature-settings: 'cv05' 1, 'calt' 1, 'zero' 1;
             }
             /* Hide default cursor on desktop — LiquidCursor takes over the feel */
             @media (hover: hover) {

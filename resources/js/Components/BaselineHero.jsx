@@ -147,7 +147,10 @@ export default function BaselineHero({ onMenuOpen, onOpenModal }) {
                         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
                         className="max-w-5xl"
                     >
-                        <h1 className="text-xl sm:text-3xl lg:text-4xl font-extrabold text-white leading-[1.75] sm:leading-[1.8] tracking-normal font-poppins select-none">
+                        {/* A whole sentence, not a headline: at extrabold it read as a wall
+                            of weight across four lines. Set normal, it reads as
+                            something the firm is saying. */}
+                        <h1 className="text-xl sm:text-3xl lg:text-4xl font-medium text-white leading-[1.75] sm:leading-[1.8] tracking-normal select-none">
                             {slide.title}
                         </h1>
                     </motion.div>
@@ -163,7 +166,7 @@ export default function BaselineHero({ onMenuOpen, onOpenModal }) {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 10 }}
                         transition={{ duration: 0.5 }}
-                        className="text-xs sm:text-base font-semibold tracking-widest text-white/95 uppercase font-poppins"
+                        className="text-xs sm:text-base font-semibold tracking-widest text-white/95 uppercase"
                     >
                         {slide.signature}
                     </motion.p>

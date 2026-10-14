@@ -68,17 +68,19 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // Partenaires
+        // Partenaires. L'adresse du site rend la plaque du logo cliquable sur
+        // la page partenaires ; sans elle, la plaque reste une simple boîte.
         $partners = [
-            ['name' => 'OMYA INVEST', 'logo_path' => 'partners/omya-invest.png'],
-            ['name' => 'AKIENI', 'logo_path' => 'partners/akieni.png'],
-            ['name' => 'BGFI', 'logo_path' => 'partners/bgfi-bank.png'],
+            ['name' => 'OMYA INVEST', 'logo_path' => 'partners/omya-invest.png', 'website_url' => null],
+            ['name' => 'AKIENI', 'logo_path' => 'partners/akieni.png', 'website_url' => 'https://www.akieni.com/'],
+            ['name' => 'BGFI', 'logo_path' => 'partners/bgfi-bank.png', 'website_url' => 'https://groupebgfibank.com/'],
         ];
 
         foreach ($partners as $index => $partner) {
             Partner::create([
                 'name' => $partner['name'],
                 'logo_path' => $partner['logo_path'],
+                'website_url' => $partner['website_url'],
                 'sort_order' => $index,
             ]);
         }

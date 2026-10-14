@@ -183,7 +183,7 @@ export default function LumoraAbout() {
                                 >
                                     <motion.div variants={piece} className="w-full">
                                         {card.content && (
-                                            <p className="text-base md:text-lg lg:text-xl text-white/90 font-normal leading-relaxed">
+                                            <p className="text-base md:text-lg lg:text-xl text-white/90 leading-relaxed">
                                                 {card.content}
                                             </p>
                                         )}
@@ -191,7 +191,7 @@ export default function LumoraAbout() {
                                         {card.items && (
                                             <ul className="space-y-3">
                                                 {card.items.map((item) => (
-                                                    <li key={item.title} className="text-base md:text-lg lg:text-xl text-white/90 font-normal leading-relaxed">
+                                                    <li key={item.title} className="text-base md:text-lg lg:text-xl text-white/90 leading-relaxed">
                                                         <span className="font-bold text-white">{item.title}</span>
                                                         {' : '}
                                                         {item.desc}
