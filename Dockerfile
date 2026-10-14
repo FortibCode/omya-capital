@@ -51,6 +51,7 @@ RUN chmod -R 775 storage bootstrap/cache
 RUN php artisan storage:link --force || true
 
 # FrankenPHP écoute sur le port que l'hébergeur impose via $PORT.
+# Le port réel est fixé au démarrage depuis $PORT ; 8080 n'est qu'un défaut.
 ENV SERVER_NAME=:8080
 EXPOSE 8080
 

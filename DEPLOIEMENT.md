@@ -11,30 +11,32 @@ réécriture.
 
 ---
 
-## Pourquoi pas Vercel
+## Où déployer
 
-Vercel n'a pas de runtime PHP officiel — seulement un portage communautaire.
-S'ajoutent trois contraintes : la base de données doit être externe, Redis
-n'existe pas, et le système de fichiers est en lecture seule alors que Laravel
-a besoin d'écrire dans `storage/`. C'est faisable, mais on construirait une
-installation fragile pour faire des tests.
+| | Coût | Remarque |
+|---|---|---|
+| **Render + Neon** | gratuit, sans carte | **Recommandé pour les tests.** Le service s'endort après 15 min d'inactivité et met ~40 s à se réveiller |
+| Railway | payant | Le plus simple techniquement, mais l'essai gratuit a été supprimé |
+| Vercel | — | **Ne convient pas** : aucun runtime PHP officiel, système de fichiers en lecture seule |
 
-**Recommandation : Railway.** Il détecte le `Dockerfile`, fournit un PostgreSQL
-managé, et donne une URL en quelques minutes.
+La base est chez **Neon** plutôt que chez Render parce que l'offre PostgreSQL
+gratuite de Render expire au bout de quelques semaines, alors que celle de Neon
+n'a pas d'échéance.
 
 ---
 
-## Mise en ligne, pas à pas
+## Mise en ligne sur Render, pas à pas
 
-### 1. Créer le service
+### 1. La base de données
 
-Sur Railway : *New Project* → *Deploy from GitHub repo* → `FortibCode/omya-capital`.
-Il repère le `Dockerfile` tout seul.
+Sur [neon.tech](https://neon.tech) : créer un compte, puis un projet. Copier la
+**connection string**, de la forme :
 
-Puis *New* → *Database* → *Add PostgreSQL*. Railway renseigne alors `PGHOST`,
-`PGPORT`, `PGDATABASE`, `PGUSER` et `PGPASSWORD`, à reporter ci-dessous.
+```
+postgresql://utilisateur:motdepasse@ep-xxx.eu-central-1.aws.neon.tech/neondb?sslmode=require
+```
 
-### 2. Générer la clé d'application
+### 2. La clé d'application
 
 En local :
 
@@ -42,50 +44,33 @@ En local :
 php artisan key:generate --show
 ```
 
-Elle sert à chiffrer les sessions et les cookies. **Ne la commitez jamais**,
-collez-la directement dans les variables de l'hébergeur.
+Elle chiffre les sessions et les cookies. **Ne la commitez jamais.**
 
-### 3. Les variables d'environnement
+### 3. Le service
 
-| Variable | Valeur | Pourquoi |
-|---|---|---|
-| `APP_NAME` | `OMYA CAPITAL` | |
-| `APP_ENV` | `production` | |
-| `APP_KEY` | *(celle de l'étape 2)* | |
-| `APP_DEBUG` | `false` | Sinon une erreur affiche le code source et les identifiants de la base |
-| `APP_URL` | l'URL fournie par l'hébergeur | Sert à construire les liens absolus |
-| `APP_LOCALE` | `fr` | |
-| `APP_FALLBACK_LOCALE` | `en` | **Si vous mettez `fr`, les erreurs de formulaire s'afficheront en clés brutes** (`validation.required`) pour toute règle non traduite |
-| `DB_CONNECTION` | `pgsql` | |
-| `DB_HOST` | `${{Postgres.PGHOST}}` | |
-| `DB_PORT` | `${{Postgres.PGPORT}}` | |
-| `DB_DATABASE` | `${{Postgres.PGDATABASE}}` | |
-| `DB_USERNAME` | `${{Postgres.PGUSER}}` | |
-| `DB_PASSWORD` | `${{Postgres.PGPASSWORD}}` | |
-| `SESSION_DRIVER` | `database` | Évite d'avoir à payer un Redis |
-| `CACHE_STORE` | `database` | idem |
-| `QUEUE_CONNECTION` | `sync` | Aucune file d'attente n'est utilisée aujourd'hui |
-| `SESSION_SECURE_COOKIE` | `true` | Le cookie de session ne part qu'en HTTPS |
-| `FILESYSTEM_DISK` | `public` | |
+Sur [render.com](https://render.com) : *New* → *Blueprint* → connecter le dépôt
+**`FortibCode/omya-capital`**.
 
-En local la configuration utilise Redis pour les sessions, le cache et les
-files. Les trois sont remplacés ici par la base de données : les tables
-existent déjà (`sessions`, `cache`, `jobs`) et cela supprime un service à
-héberger. Pour un site de cette taille, la différence de performance n'est pas
-perceptible.
+> Attention : vous avez un autre dépôt nommé `FortibCode/OmyaCapital`, sans
+> tiret. Ce n'est pas celui-ci.
 
-### 4. Remplir la base — une seule fois
+Render lit `render.yaml` et crée le service seul. Il demandera les trois
+valeurs laissées vides, à coller dans son interface :
 
-Après le premier déploiement, dans la console de l'hébergeur :
+| Variable | Valeur |
+|---|---|
+| `APP_KEY` | la clé de l'étape 2 |
+| `DB_URL` | la chaîne de connexion de l'étape 1 |
+| `SEED_ON_BOOT` | `true` |
 
-```bash
-php artisan db:seed --force
-```
+### 4. Après le premier déploiement
 
-Les migrations tournent automatiquement à chaque démarrage, mais **pas** le
-seeder. C'est volontaire : il commence par vider les tables `services`,
-`team_members` et `partners` avant de les réécrire. Lancé après coup, il
-effacerait toute modification faite depuis l'administration.
+**Retirer `SEED_ON_BOOT`** dans les variables du service.
+
+Elle sert à remplir services, équipe et partenaires au premier démarrage,
+puisque l'offre gratuite de Render ne donne pas d'accès console. Mais le
+seeder vide ces trois tables avant de les réécrire : laissée en place, elle
+effacerait à chaque redémarrage tout ce qui aurait été modifié depuis.
 
 ---
 

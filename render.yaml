@@ -1,0 +1,76 @@
+# Déploiement Render — OMYA CAPITAL
+#
+# Render lit ce fichier et crée le service tout seul (Blueprint). Il n'y a
+# qu'à connecter le dépôt ; aucun réglage à recopier à la main, sauf les trois
+# secrets marqués sync: false plus bas.
+#
+# La base de données n'est pas déclarée ici : l'offre PostgreSQL gratuite de
+# Render expire au bout de quelques semaines. On passe donc par Neon, dont
+# l'offre gratuite n'a pas d'échéance. Voir DEPLOIEMENT.md.
+
+services:
+  - type: web
+    name: omya-capital
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    # Francfort est le point de présence le plus proche de Brazzaville parmi
+    # ceux ouverts à l'offre gratuite.
+    region: frankfurt
+    healthCheckPath: /
+    envVars:
+      - key: APP_NAME
+        value: OMYA CAPITAL
+      - key: APP_ENV
+        value: production
+
+      # Chiffre les sessions et les cookies. Généré par `php artisan
+      # key:generate --show` et collé dans l'interface Render : il n'a rien à
+      # faire dans le dépôt.
+      - key: APP_KEY
+        sync: false
+
+      # Jamais true en ligne : une erreur afficherait le code source et les
+      # identifiants de la base à n'importe quel visiteur.
+      - key: APP_DEBUG
+        value: "false"
+
+      # Render fournit l'URL publique du service.
+      - key: APP_URL
+        fromService:
+          type: web
+          name: omya-capital
+          envVarKey: RENDER_EXTERNAL_URL
+
+      - key: APP_LOCALE
+        value: fr
+      # Surtout pas fr : aucune règle de validation non traduite n'aurait de
+      # message, et les erreurs du formulaire s'afficheraient en clés brutes
+      # (validation.required).
+      - key: APP_FALLBACK_LOCALE
+        value: en
+
+      # Chaîne de connexion fournie par Neon, collée dans l'interface Render.
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_URL
+        sync: false
+
+      # Sessions, cache et files vont en base plutôt que sur Redis : les
+      # tables existent déjà et cela supprime un service à héberger.
+      - key: SESSION_DRIVER
+        value: database
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: SESSION_SECURE_COOKIE
+        value: "true"
+      - key: FILESYSTEM_DISK
+        value: public
+
+      # Pour le tout premier déploiement seulement : remplit services, équipe
+      # et partenaires. À retirer juste après, sinon chaque redémarrage
+      # réécrase ces tables.
+      - key: SEED_ON_BOOT
+        sync: false
